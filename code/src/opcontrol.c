@@ -12,7 +12,7 @@
 
 #include "main.h"
 #define LEFT_DRIVE 2
-#define RIGHT_DRIVE 4 //needs to be reversed
+#define RIGHT_DRIVE 4 //reversed in chassisSet(int, int)
 #define LEFT_LIFT_MOTOR 3
 #define RIGHT_LIFT_MOTOR 6 //needs to be reversed
 #define CLAW 7
@@ -52,10 +52,12 @@ void operatorControl() {
 		//positive = right, negative = left
 		int sideMotion = joystickGetAnalog(1, 1);
 
-
+		//find out if lift is moving up, stopped, or going down
 
 		//input gathered, move bot
 		moveDrive(forwardMotion, sideMotion);
+
+		//move lift
 
 
 
