@@ -38,5 +38,6 @@ void initializeIO() {
  */
 void initialize() {
   analogCalibrate(1);
-analogCalibrate(2);
+  analogCalibrate(2);
+  analogCalibrate(3);
 }

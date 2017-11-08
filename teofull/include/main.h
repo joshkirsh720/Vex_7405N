@@ -94,6 +94,16 @@ void initialize();
  */
 void operatorControl();
 
+void moveDrive();
+
+void chasisSet();
+
+void chainbarMove();
+
+void autoStack();
+
+
+
 // End C++ export structure
 #ifdef __cplusplus
 }

@@ -147,6 +147,34 @@ void operatorControl() {
 		delay(100);
 	}
 }
+//function that lifts the chainbar to a certain height that is indicated by potentiometer values.
+void chainbarMove(int position) {
+	if(position < analogReadCalibrated(3)){ //checks if the desired position is less than the current position of the chainbar.
+		while((analogReadCalibrated(3) != (position - 50)) || (analogReadCalibrated(3) != (position + 50))){
+			motor(CHAINBAR, -127);
+		}
+	}else if(position > analogReadCalibrate(3)){ //checks if the desired position is more than the current position of the chainbar.
+		while((analogReadCalibrated(3) != (position - 50)) || (analogReadCalibrated(3) != (position + 50))){
+			motor(CHAINBAR, 127);
+		}
+	}
+}
+
+//function that lifts the lift to a certain height that is indicated by potentiometer values.
+void liftMove(int position) {
+	int potAvrg = (abs(analogReadCalibrated(1)) + abs(analogReadCalibrated(2)))/2; //Calculated average of the two lift positions, to estimate
+
+	if(position < potAvrg){ //checks if the current position is less than the lift height
+		while(potAvrg != (position - 50)) || (potAvrg != (position + 50))){
+			motorSet(LEFT_LIFT_MOTOR, upSpeedLeft);
+			motorSet(RIGHT_LIFT_MOTOR, upSpeedRight);
+		}
+	}else if(position > potAvrg) { //checks in the current position is more than the lift height
+		motorSet(LEFT_LIFT_MOTOR, -upSpeedLeft);
+		motorSet(RIGHT_LIFT_MOTOR, -upSpeedRight);
+	}
+
+}
 
 
 void chassisSet(int left, int right) {
@@ -174,4 +202,13 @@ void moveDrive(int forwardMotion, int sideMotion) {
 		//set the chassis to stop moving
 		chassisSet(0, 0);
 	}
+}
+
+void autoStack(int maxLiftHeight, int maxChainbarHeight, int lowChainbarHeight ) {
+	chainbarMove(maxChainbarHeight);
+	liftMove(maxLiftHeight);
+
+
+
+
 }
