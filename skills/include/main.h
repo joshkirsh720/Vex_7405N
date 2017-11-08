@@ -94,6 +94,13 @@ void initialize();
  */
 void operatorControl();
 
+void chassisSet(int left, int right);
+void moveForward(int forwardMotion);
+void turn(int sidewaysMotion);
+void stop();
+void moveForTime(int timeInMS, int speed);
+void turnForTime(int timeInMS, int speed);
+
 // End C++ export structure
 #ifdef __cplusplus
 }
