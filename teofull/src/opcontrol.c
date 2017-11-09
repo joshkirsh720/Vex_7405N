@@ -130,9 +130,9 @@ void operatorControl() {
 
 			//testing statements for the liftMove() function, using the buttons located at the 5 location
 			if(joystickGetDigital(1, 5, JOY_UP)){
-				liftMove(800);
+				liftMove(900);
 			}else if(joystickGetDigital(1, 5, JOY_DOWN)){
-				liftMove(100);
+				liftMove(800);
 			}else{
 				motorSet(LEFT_LIFT_MOTOR, -20);
 				motorSet(RIGHT_LIFT_MOTOR, -20);
@@ -233,24 +233,20 @@ void liftMove(int position) {
 
 
 	if(abs(analogReadCalibrated(1)) > position){ //checks if the current position is less than the lift height
-		while(( abs(analogReadCalibrated(1)) >= (position - 100)) || (abs(analogReadCalibrated(1)) <= (position + 100)) ){
+		while((abs(analogReadCalibrated(1)) > (position + 30))){
+			motorSet(LEFT_LIFT_MOTOR, upSpeedLeft);
+			motorSet(RIGHT_LIFT_MOTOR, -upSpeedRight);
 
 		}
+		c = 0;
 	}else if(abs(analogReadCalibrated(1)) < position) { //checks in the current position is more than the lift height
 		printf("%s", "checkpoint 1");
-		while((abs(analogReadCalibrated(1)) < (position - 30)) || (abs(analogReadCalibrated(1)) > (position + 30)) ){ // runs the code inside of the while loop until the values are close to that of the desired
+		while((abs(analogReadCalibrated(1)) < (position - 30)) ){ // runs the code inside of the while loop until the values are close to that of the desired
 			printf("%s", "checkpoint 2");
 			motorSet(LEFT_LIFT_MOTOR, -upSpeedLeft);
 			motorSet(RIGHT_LIFT_MOTOR, upSpeedRight);
-
-						printf("%s", "Lift Position:");
-						printf("%d", abs(analogReadCalibrated(1)));
-						printf("%s", "\n\n");
-						printf("%s", "Desired Position:");
-						printf("%d", position);
-						printf("%s", "\n\n");
 		}
-
+		printf("%s", "checkpoint 3");
 		c = 0;
 
 	}
@@ -261,8 +257,9 @@ void liftMove(int position) {
 
 
 
-void autoStack(int maxLiftHeight, int maxChainbarHeight, int lowChainbarHeight, int upSpeedLeft, int upSpeedRight ) {
-	chainbarMove(maxChainbarHeight);
+void autoStack(int maxLiftHeight, int maxChainbarHeight, int lowChainbarHeight ) {
 	liftMove(maxLiftHeight);
+	chainbarMove(maxChainbarHeight);
+
 
 }
