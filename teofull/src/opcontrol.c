@@ -46,10 +46,10 @@ void operatorControl() {
 	while (1) {
 
 		//base speed for the right side of the lift
-		int upSpeedRight = 110;
+		int upSpeedRight = 125;
 
 		//base speed for the left side of the lift
-		int upSpeedLeft = -110;
+		int upSpeedLeft = -125;
 
 		//get petentiometer values from the right lift potentiometer
 		int rLiftPot = abs(analogReadCalibrated(1));
@@ -64,6 +64,7 @@ void operatorControl() {
 
 		//positive = right, negative = left
 		int sideMotion = joystickGetAnalog(1, 1);
+		//
 
 
 
@@ -71,29 +72,33 @@ void operatorControl() {
 
 		//Syncing lift speeds for left and right side using potentiometers
 		if(rLiftPot < (lLiftPot - 100)){
-				upSpeedLeft = 60 ;
-				upSpeedRight = -115;
+				upSpeedLeft = 60;
+				upSpeedRight = -125;
 			}else if(lLiftPot < (rLiftPot - 100 )){
 				upSpeedRight = -60;
-				upSpeedLeft = 115;
+				upSpeedLeft = 125;
 			}else {
-				upSpeedRight = -110;
-				upSpeedLeft = 110;
+				upSpeedRight = -125;
+				upSpeedLeft = 125;
 			}
 
 			//Tele op Lift controls
 			if(joystickGetDigital(1, 8, JOY_UP)){ //lift comes up on button click
-				motorSet(LEFT_LIFT_MOTOR, upSpeedLeft);
+				motorSet(LEFT_LIFT_MOTOR, -upSpeedLeft);
 				motorSet(RIGHT_LIFT_MOTOR, upSpeedRight);
 				c = 1;
 			}else if(joystickGetDigital(1, 8, JOY_DOWN)){ //lift goes down on button click
 				c = 0;
-				motorSet(LEFT_LIFT_MOTOR, 5);
-				motorSet(RIGHT_LIFT_MOTOR, -5);
-				c = 1;
+				motorSet(LEFT_LIFT_MOTOR, 90);
+				motorSet(RIGHT_LIFT_MOTOR, 90);
+				c = 2;
 			}else if(c == 1){
-				motorSet(LEFT_LIFT_MOTOR, 30); //hold power while the button is not being pressed
-				motorSet(RIGHT_LIFT_MOTOR, -30);
+				motorSet(LEFT_LIFT_MOTOR, -20); //hold power while the button is not being pressed
+				motorSet(RIGHT_LIFT_MOTOR, -20);
+
+			}else if(c ==2){
+				motorSet(LEFT_LIFT_MOTOR, -20); //hold power while the button is not being pressed
+				motorSet(RIGHT_LIFT_MOTOR, -20);
 
 			}else {
 				motorSet(LEFT_LIFT_MOTOR, 8); //hold power while the button is not being pressed
@@ -123,22 +128,24 @@ void operatorControl() {
 					motorSet(CLAW, 0);
 				}
 
+			//testing statements for the liftMove() function, using the buttons located at the 5 location
+			if(joystickGetDigital(1, 5, JOY_UP)){
+				liftMove(800);
+			}else if(joystickGetDigital(1, 5, JOY_DOWN)){
+				liftMove(100);
+			}else{
+				motorSet(LEFT_LIFT_MOTOR, -20);
+				motorSet(RIGHT_LIFT_MOTOR, -20);
+			}
 
-
-			//prints out the potentiometer values and the corresponding speeds
-
-
-
-
-		//input gathered, move bot
+		//input gathered, move botn
 		moveDrive(forwardMotion, sideMotion);
 
 
 
 		//print out values
-		printf("%d", forwardMotion);
-		printf("%s", "\n");
-		printf("%d", sideMotion);
+
+		printf("%d", analogRead(3));
 		printf("%s", "\n\n");
 
 
@@ -146,34 +153,6 @@ void operatorControl() {
 
 		delay(100);
 	}
-}
-//function that lifts the chainbar to a certain height that is indicated by potentiometer values.
-void chainbarMove(int position) {
-	if(position < analogReadCalibrated(3)){ //checks if the desired position is less than the current position of the chainbar.
-		while((analogReadCalibrated(3) != (position - 50)) || (analogReadCalibrated(3) != (position + 50))){
-			motor(CHAINBAR, -127);
-		}
-	}else if(position > analogReadCalibrate(3)){ //checks if the desired position is more than the current position of the chainbar.
-		while((analogReadCalibrated(3) != (position - 50)) || (analogReadCalibrated(3) != (position + 50))){
-			motor(CHAINBAR, 127);
-		}
-	}
-}
-
-//function that lifts the lift to a certain height that is indicated by potentiometer values.
-void liftMove(int position) {
-	int potAvrg = (abs(analogReadCalibrated(1)) + abs(analogReadCalibrated(2)))/2; //Calculated average of the two lift positions, to estimate
-
-	if(position < potAvrg){ //checks if the current position is less than the lift height
-		while(potAvrg != (position - 50)) || (potAvrg != (position + 50))){
-			motorSet(LEFT_LIFT_MOTOR, upSpeedLeft);
-			motorSet(RIGHT_LIFT_MOTOR, upSpeedRight);
-		}
-	}else if(position > potAvrg) { //checks in the current position is more than the lift height
-		motorSet(LEFT_LIFT_MOTOR, -upSpeedLeft);
-		motorSet(RIGHT_LIFT_MOTOR, -upSpeedRight);
-	}
-
 }
 
 
@@ -204,11 +183,86 @@ void moveDrive(int forwardMotion, int sideMotion) {
 	}
 }
 
-void autoStack(int maxLiftHeight, int maxChainbarHeight, int lowChainbarHeight ) {
+//function that lifts the chainbar to a certain height that is indicated by potentiometer values.
+void chainbarMove(int position) {
+	if(position < analogReadCalibrated(3)){ //checks if the desired position is less than the current position of the chainbar.
+		while((analogReadCalibrated(3) != (position - 50)) || (analogReadCalibrated(3) != (position + 50))){
+			motorSet(CHAINBAR, -127);
+		}
+	}else if(position > analogReadCalibrated(3)){ //checks if the desired position is more than the current position of the chainbar.
+		while((analogReadCalibrated(3) != (position - 50)) || (analogReadCalibrated(3) != (position + 50))){
+			motorSet(CHAINBAR, 127);
+		}
+	}
+}
+
+
+
+//function that lifts the lift to a certain height that is indicated by potentiometer values.
+void liftMove(int position) {
+	int c = 1;
+
+
+	//base speed for the right side of the lift
+	int upSpeedRight = 125;
+
+	//base speed for the left side of the lift
+	int upSpeedLeft = -125;
+
+	//get petentiometer values from the right lift potentiometer
+	int rLiftPot = abs(analogReadCalibrated(1));
+
+	//get potentiomemter values from the left lift potentiometer
+	int lLiftPot = abs(analogReadCalibrated(2));
+
+	//syncing both sides of the lift while going up
+
+	while(c == 1){
+		if(rLiftPot < (lLiftPot - 100)){
+				upSpeedLeft = 60;
+				upSpeedRight = -125;
+			}else if(lLiftPot < (rLiftPot - 100 )){
+				upSpeedRight = -60;
+				upSpeedLeft = 125;
+			}else {
+				upSpeedRight = -125;
+				upSpeedLeft = 125;
+			}
+
+
+
+
+	if(abs(analogReadCalibrated(1)) > position){ //checks if the current position is less than the lift height
+		while(( abs(analogReadCalibrated(1)) >= (position - 100)) || (abs(analogReadCalibrated(1)) <= (position + 100)) ){
+
+		}
+	}else if(abs(analogReadCalibrated(1)) < position) { //checks in the current position is more than the lift height
+		printf("%s", "checkpoint 1");
+		while((abs(analogReadCalibrated(1)) < (position - 30)) || (abs(analogReadCalibrated(1)) > (position + 30)) ){ // runs the code inside of the while loop until the values are close to that of the desired
+			printf("%s", "checkpoint 2");
+			motorSet(LEFT_LIFT_MOTOR, -upSpeedLeft);
+			motorSet(RIGHT_LIFT_MOTOR, upSpeedRight);
+
+						printf("%s", "Lift Position:");
+						printf("%d", abs(analogReadCalibrated(1)));
+						printf("%s", "\n\n");
+						printf("%s", "Desired Position:");
+						printf("%d", position);
+						printf("%s", "\n\n");
+		}
+
+		c = 0;
+
+	}
+}
+
+}
+
+
+
+
+void autoStack(int maxLiftHeight, int maxChainbarHeight, int lowChainbarHeight, int upSpeedLeft, int upSpeedRight ) {
 	chainbarMove(maxChainbarHeight);
 	liftMove(maxLiftHeight);
-
-
-
 
 }

@@ -11,6 +11,16 @@
  */
 
 #include "main.h"
+#define LEFT_DRIVE 2
+#define RIGHT_DRIVE 4 //needs to be reversed
+#define LEFT_LIFT_MOTOR 3
+#define RIGHT_LIFT_MOTOR 6 //needs to be reversed
+#define CLAW 7
+#define CHAINBAR 5
+#define MOBILE_LIFT 8
+#define RIGHT_LIFT_POT 1
+#define LEFT_LIFT_POT 2
+
 
 /*
  * Runs the user autonomous code. This function will be started in its own task with the default
@@ -27,4 +37,6 @@
  * so, the robot will await a switch to another mode or disable/enable cycle.
  */
 void autonomous() {
+
+
 }
