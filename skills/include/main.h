@@ -95,11 +95,9 @@ void initialize();
 void operatorControl();
 
 void chassisSet(int left, int right);
-void moveForward(int forwardMotion);
-void turn(int sidewaysMotion);
+void liftSet(int left, int right);
 void stop();
-void moveForTime(int timeInMS, int speed);
-void turnForTime(int timeInMS, int speed);
+bool resetIMEs();
 
 // End C++ export structure
 #ifdef __cplusplus

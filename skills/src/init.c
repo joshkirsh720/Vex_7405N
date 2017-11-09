@@ -11,6 +11,16 @@
  */
 
 #include "main.h"
+#define LEFT_DRIVE 2
+#define RIGHT_DRIVE 4 //reversed in chassisSet(int, int)
+#define LEFT_LIFT_MOTOR 3
+#define RIGHT_LIFT_MOTOR 6 //needs to be reversed
+#define CLAW 7
+#define CHAINBAR 5
+#define MOBILE_LIFT 8
+#define RIGHT_LIFT_POT 1
+#define LEFT_LIFT_POT 2
+#define CHAINBAR_POT 3
 
 /*
  * Runs pre-initialization code. This function will be started in kernel mode one time while the
@@ -37,4 +47,10 @@ void initializeIO() {
  * can be implemented in this task if desired.
  */
 void initialize() {
+
+
+  printf("%d", imeInitializeAll());
+  analogCalibrate(RIGHT_LIFT_POT);
+  analogCalibrate(LEFT_LIFT_POT);
+  analogCalibrate(CHAINBAR_POT);
 }

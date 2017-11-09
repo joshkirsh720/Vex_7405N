@@ -17,10 +17,13 @@
 #define RIGHT_LIFT_MOTOR 6 //needs to be reversed
 #define CLAW 7
 #define CHAINBAR 5
-#define MOBILE_LIFT 8
+#define MOBILE_LIFT 8 //negative is up
 #define RIGHT_LIFT_POT 1
 #define LEFT_LIFT_POT 2
+#define CHAINBAR_POT 3
 
+#define LEFT_IME 0
+#define RIGHT_IME 2
 /*
  * Runs the user autonomous code. This function will be started in its own task with the default
  * priority and stack size whenever the robot is enabled via the Field Management System or the
@@ -35,65 +38,90 @@
  * The autonomous task may exit, unlike operatorControl() which should never exit. If it does
  * so, the robot will await a switch to another mode or disable/enable cycle.
  */
- void chassisSet(int left, int right);
- void moveForward(int forwardMotion);
- void turn(int sidewaysMotion);
- void stop();
-void moveForTime(int timeInMS, int speed);
-void turnForTime(int timeInMS, int speed);
+
+void chassisSet(int left, int right);
+void liftSet(int left, int right);
+void stop();
+bool resetIMEs();
 
 void autonomous() {
-  //turn to face mobile goal
-  //left turn is negative, right turn is positive
 
+  motorSet(CLAW, 30);
 
-  //move forward to mobile goal
+  int leftIME=0, rightIME=0;
 
+  printf("%s", "reseting IMEs before moving forward: ");
+  printf("%s", resetIMEs() + "");
+  printf("%s", "\n");
+
+  //move forward
+  chassisSet(127, 127);
+  while(leftIME <= 2050 && rightIME >= -2050) {
+    imeGet(LEFT_IME, &leftIME);
+    imeGet(RIGHT_IME, &rightIME);
+  }
+  stop();
 
   //pick up mobile goal
+  motorSet(MOBILE_LIFT, -127);
+  motorSet(MOBILE_LIFT, -30);
 
+  //place cone on top of goal
+        //lift lift
+        //move chainbar down to a vertical position
+        //open claw
 
+  //turn 180 to the right
+  printf("%s", "reseting IMEs before turning around: ");
+  printf("%s", resetIMEs() + "");
+  printf("%s", "\n");
+  leftIME=0;rightIME=0;
 
-  //place preload on mobile goal
+  chassisSet(127, -127);
+  while(leftIME <= 1400 && rightIME <= 1400) {
+    imeGet(LEFT_IME, &leftIME);
+    imeGet(RIGHT_IME, &rightIME);
+  }
+  stop();
 
+  //move to 10 point zone
+  printf("%s", "reseting IMEs before moving to 10 point zone: ");
+  printf("%s", resetIMEs() + "");
+  printf("%s", "\n");
+  leftIME=0;rightIME=0;
 
-  //turn 180
+  chassisSet(127, 127);
+  while(leftIME <= 2150 && rightIME >= -2150) {
+    imeGet(LEFT_IME, &leftIME);
+    imeGet(RIGHT_IME, &rightIME);
+  }
+  stop();
 
+  //drop mobile goal
+  motorSet(MOBILE_LIFT, 10);
+  delay(500);
+  motorSet(MOBILE_LIFT, 0);
 
-  //move forward to right before 10 point zone
-
-
-  //place mobile goal with stacked cone in 10 point zone
-
+  //back up
+  chassisSet(-127, -127);
+  delay(750);
+  stop();
 }
 
 
 
 
 void chassisSet(int left, int right) {
-	motorSet(LEFT_DRIVE, left);
-
-	//right is opposite because that's how we built our robot
-	motorSet(RIGHT_DRIVE, -right);
+  motorSet(LEFT_DRIVE, left);
+  motorSet(RIGHT_DRIVE, -right);
 }
-
-void moveForward(int forwardMotion) {
-  chassisSet(forwardMotion, forwardMotion);
-}
-void turn(int sidewaysMotion) {
-  chassisSet(sidewaysMotion, -sidewaysMotion);
+void liftSet(int left, int right) {
+  motorSet(LEFT_LIFT_MOTOR, left);
+  motorSet(RIGHT_LIFT_MOTOR, -right);
 }
 void stop() {
-  chassisSet(0,0);
+  chassisSet(0, 0);
 }
-
-void moveForTime(int timeInMS, int speed) {
-  moveForward(speed);
-  delay(timeInMS);
-  stop();
-}
-void turnForTime(int timeInMS, int speed) {
-  turn(speed);
-  delay(timeInMS);
-  stop();
+bool resetIMEs() {
+  return imeReset(LEFT_IME) && imeReset(RIGHT_IME);
 }
