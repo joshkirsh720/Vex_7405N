@@ -104,7 +104,7 @@ void autoStack();
 
 void drive();
 
-void liftMove(int position, int upSpeedLeft, int upSpeedRight);
+void liftMove(int position);
 
 
 // End C++ export structure

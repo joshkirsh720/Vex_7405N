@@ -115,7 +115,7 @@ void operatorControl() {
 			}else if(joystickGetDigital(1, 7 , JOY_LEFT)){
 			 motorSet(CHAINBAR, -50);
 			}else {
-				 motorSet(CHAINBAR, 30);
+				 motorSet(CHAINBAR, 0);
 			 }
 
 			 //beginning of the Claw code
@@ -128,18 +128,17 @@ void operatorControl() {
 					motorSet(CLAW, 0);
 				}
 
-				//testing statements for the liftMove() function, using the buttons located at the 5 location
-				if(joystickGetDigital(1, 5, JOY_UP)){
-					liftMove(500, upSpeedLeft, upSpeedRight);
-				}else if(joystickGetDigital(1, 5, JOY_DOWN)){
-					liftMove(100, upSpeedLeft, upSpeedRight);
-				}else {
-					motorSet(LEFT_LIFT_MOTOR, 0);
-					motorSet(RIGHT_LIFT_MOTOR, 0);
-				}
+			//testing statements for the liftMove() function, using the buttons located at the 5 location
+			if(joystickGetDigital(1, 5, JOY_UP)){
+				liftMove(800);
+			}else if(joystickGetDigital(1, 5, JOY_DOWN)){
+				liftMove(100);
+			}else{
+				motorSet(LEFT_LIFT_MOTOR, -20);
+				motorSet(RIGHT_LIFT_MOTOR, -20);
+			}
 
-
-		//input gathered, move bot
+		//input gathered, move botn
 		moveDrive(forwardMotion, sideMotion);
 
 
@@ -197,34 +196,73 @@ void chainbarMove(int position) {
 	}
 }
 
+
+
 //function that lifts the lift to a certain height that is indicated by potentiometer values.
-void liftMove(int position, int upSpeedLeft, int upSpeedRight) {
-	int potAvrg = (abs(analogReadCalibrated(1)) + abs(analogReadCalibrated(2)))/2; //Calculated average of the two lift positions, to estimate
-	printf("%s", "Lift Position:");
-	printf("%d", potAvrg);
-	printf("%s", "\n\n");
-	printf("%s", "Desired Position:");
-	printf("%d", position);
-	printf("%s", "\n\n");
+void liftMove(int position) {
+	int c = 1;
 
 
-	if(position < potAvrg){ //checks if the current position is less than the lift height
-		while((potAvrg != (position - 100)) || (potAvrg != (position + 100)) ){
-			motorSet(LEFT_LIFT_MOTOR, upSpeedLeft);
-			motorSet(RIGHT_LIFT_MOTOR, -upSpeedRight);
+	//base speed for the right side of the lift
+	int upSpeedRight = 125;
+
+	//base speed for the left side of the lift
+	int upSpeedLeft = -125;
+
+	//get petentiometer values from the right lift potentiometer
+	int rLiftPot = abs(analogReadCalibrated(1));
+
+	//get potentiomemter values from the left lift potentiometer
+	int lLiftPot = abs(analogReadCalibrated(2));
+
+	//syncing both sides of the lift while going up
+
+	while(c == 1){
+		if(rLiftPot < (lLiftPot - 100)){
+				upSpeedLeft = 60;
+				upSpeedRight = -125;
+			}else if(lLiftPot < (rLiftPot - 100 )){
+				upSpeedRight = -60;
+				upSpeedLeft = 125;
+			}else {
+				upSpeedRight = -125;
+				upSpeedLeft = 125;
+			}
+
+
+
+
+	if(abs(analogReadCalibrated(1)) > position){ //checks if the current position is less than the lift height
+		while(( abs(analogReadCalibrated(1)) >= (position - 100)) || (abs(analogReadCalibrated(1)) <= (position + 100)) ){
+
 		}
-	}else if(position > potAvrg) { //checks in the current position is more than the lift height
-		while((potAvrg != (position - 100)) || (potAvrg != (position + 100)) ){
+	}else if(abs(analogReadCalibrated(1)) < position) { //checks in the current position is more than the lift height
+		printf("%s", "checkpoint 1");
+		while((abs(analogReadCalibrated(1)) < (position - 30)) || (abs(analogReadCalibrated(1)) > (position + 30)) ){ // runs the code inside of the while loop until the values are close to that of the desired
+			printf("%s", "checkpoint 2");
 			motorSet(LEFT_LIFT_MOTOR, -upSpeedLeft);
 			motorSet(RIGHT_LIFT_MOTOR, upSpeedRight);
+
+						printf("%s", "Lift Position:");
+						printf("%d", abs(analogReadCalibrated(1)));
+						printf("%s", "\n\n");
+						printf("%s", "Desired Position:");
+						printf("%d", position);
+						printf("%s", "\n\n");
 		}
 
+		c = 0;
+
 	}
+}
 
 }
 
+
+
+
 void autoStack(int maxLiftHeight, int maxChainbarHeight, int lowChainbarHeight, int upSpeedLeft, int upSpeedRight ) {
 	chainbarMove(maxChainbarHeight);
-	liftMove(maxLiftHeight, upSpeedLeft, upSpeedRight);
+	liftMove(maxLiftHeight);
 
 }
