@@ -64,6 +64,7 @@ void operatorControl() {
 
 		//positive = right, negative = left
 		int sideMotion = joystickGetAnalog(1, 1);
+		//
 
 
 
