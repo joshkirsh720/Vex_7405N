@@ -102,6 +102,9 @@ void chainbarMove();
 
 void autoStack();
 
+void drive();
+
+void liftMove(int position, int upSpeedLeft, int upSpeedRight);
 
 
 // End C++ export structure
