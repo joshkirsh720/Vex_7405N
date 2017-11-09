@@ -47,7 +47,9 @@ void initializeIO() {
  * can be implemented in this task if desired.
  */
 void initialize() {
-  imeInitializeAll();
+
+
+  printf("%d", imeInitializeAll());
   analogCalibrate(RIGHT_LIFT_POT);
   analogCalibrate(LEFT_LIFT_POT);
   analogCalibrate(CHAINBAR_POT);
