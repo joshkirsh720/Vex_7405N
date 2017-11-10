@@ -27,6 +27,7 @@
 
 #include <API.h>
 
+
 // Allow usage of this file in C++ programs
 #ifdef __cplusplus
 extern "C" {
@@ -105,6 +106,8 @@ void autoStack();
 void drive();
 
 void liftMove(int position);
+
+Encoder encoder;
 
 
 // End C++ export structure

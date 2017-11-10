@@ -40,9 +40,14 @@
  */
 void chassisSet(int left, int right);
 void moveDrive(int forwardMotion, int sideMotion);
+
+
 int c = 0;
 
 void operatorControl() {
+	encoderReset(encoder);
+
+
 	while (1) {
 
 		//base speed for the right side of the lift
@@ -130,12 +135,7 @@ void operatorControl() {
 
 			//testing statements for the liftMove() function, using the buttons located at the 5 location
 			if(joystickGetDigital(1, 5, JOY_UP)){
-				liftMove(900);
-			}else if(joystickGetDigital(1, 5, JOY_DOWN)){
-				liftMove(800);
-			}else{
-				motorSet(LEFT_LIFT_MOTOR, -20);
-				motorSet(RIGHT_LIFT_MOTOR, -20);
+				autoStack();
 			}
 
 		//input gathered, move botn
@@ -145,7 +145,7 @@ void operatorControl() {
 
 		//print out values
 
-		printf("%d", analogRead(3));
+		printf("%d", encoderGet(encoder));
 		printf("%s", "\n\n");
 
 
@@ -218,6 +218,7 @@ void liftMove(int position) {
 	//syncing both sides of the lift while going up
 
 	while(c == 1){
+
 		if(rLiftPot < (lLiftPot - 100)){
 				upSpeedLeft = 60;
 				upSpeedRight = -125;
@@ -234,19 +235,19 @@ void liftMove(int position) {
 
 	if(abs(analogReadCalibrated(1)) > position){ //checks if the current position is less than the lift height
 		while((abs(analogReadCalibrated(1)) > (position + 30))){
-			motorSet(LEFT_LIFT_MOTOR, upSpeedLeft);
-			motorSet(RIGHT_LIFT_MOTOR, -upSpeedRight);
+			motorSet(LEFT_LIFT_MOTOR, 10);
+			motorSet(RIGHT_LIFT_MOTOR, 10);
 
 		}
 		c = 0;
 	}else if(abs(analogReadCalibrated(1)) < position) { //checks in the current position is more than the lift height
-		printf("%s", "checkpoint 1");
-		while((abs(analogReadCalibrated(1)) < (position - 30)) ){ // runs the code inside of the while loop until the values are close to that of the desired
-			printf("%s", "checkpoint 2");
+		while((abs(analogReadCalibrated(1)) < (position + 100)) ){ // runs the code inside of the while loop until the values are close to that of the desired
 			motorSet(LEFT_LIFT_MOTOR, -upSpeedLeft);
 			motorSet(RIGHT_LIFT_MOTOR, upSpeedRight);
 		}
 		printf("%s", "checkpoint 3");
+		printf("%d", analogReadCalibrated(1));
+		printf("%s", "\n\n");
 		c = 0;
 
 	}
@@ -258,8 +259,67 @@ void liftMove(int position) {
 
 
 void autoStack(int maxLiftHeight, int maxChainbarHeight, int lowChainbarHeight ) {
-	liftMove(maxLiftHeight);
-	chainbarMove(maxChainbarHeight);
+	int a = 0;
+
+	motorSet(CLAW, 127);
+	delay(200);
+
+
+	liftMove(1000);
+	motorSet(LEFT_LIFT_MOTOR, -20); //hold power while the button is not being pressed
+	motorSet(RIGHT_LIFT_MOTOR, -20);
+	printf("%s", " the current height of the lift is:");
+	printf("%d", abs(analogReadCalibrated(1)));
+	delay(1000);
+
+	motorSet(CHAINBAR, -127);
+	delay(400);
+	motorSet(CHAINBAR, 0);
+	delay(600);
+	a = 1;
+
+
+	while(a ==1){
+
+
+
+		while(joystickGetDigital(1, 5, JOY_DOWN) != true){
+			motorSet(LEFT_LIFT_MOTOR, 10);
+			motorSet(RIGHT_LIFT_MOTOR, 10);
+		}
+		a = 0;
+
+
+	}
+
+
+	motorSet(LEFT_LIFT_MOTOR, -20); //hold power while the button is not being pressed
+	motorSet(RIGHT_LIFT_MOTOR, -20);
+	printf("%s", " the current height of the lift is:");
+	printf("%d", abs(analogReadCalibrated(1)));
+	delay(500);
+
+	motorSet(CLAW, -127);
+	delay(500);
+	motorSet(CLAW, 80);
+	delay(300);
+	motorSet(CLAW, 0);
+
+	delay(800);
+
+
+	liftMove(990);
+	motorSet(LEFT_LIFT_MOTOR, -20); //hold power while the button is not being pressed
+	motorSet(RIGHT_LIFT_MOTOR, -20);
+	delay(500);
+
+
+	motorSet(CHAINBAR, 127);
+	delay(150);
+
+	liftMove(200);
+
+
 
 
 }
