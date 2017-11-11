@@ -148,6 +148,14 @@ void operatorControl() {
 				autoStack();
 			}
 
+			if(joystickGetDigital(1, 7, JOY_UP)){
+				motorSet(9, -127);
+			}else if(joystickGetDigital(1, 7 , JOY_DOWN)){
+				motorSet(9, 127);
+			}else {
+					motorSet(9, -30);
+				}
+
 		//input gathered, move botn
 		moveDrive(forwardMotion, sideMotion);
 
@@ -280,7 +288,7 @@ void autoStack( ) {
 	motorSet(RIGHT_LIFT_MOTOR, -20);
 	printf("%s", " the current height of the lift is:");
 	printf("%d", abs(analogReadCalibrated(1)));
-	delay(1000);
+	delay(500);
 
 	motorSet(CHAINBAR, -127);
 	delay(400);
@@ -309,8 +317,8 @@ void autoStack( ) {
 	printf("%d", abs(analogReadCalibrated(1)));
 	delay(500);
 
-	motorSet(CLAW, -127);
-	delay(500);
+	motorSet(CLAW, -120);
+	delay(400);
 	motorSet(CLAW, 80);
 	delay(750);
 	motorSet(CLAW, 0);
