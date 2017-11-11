@@ -73,6 +73,16 @@ void operatorControl() {
 
 
 
+		//mobile goal lift code
+			if(joystickGetDigital(1, 7, JOY_UP)){
+				motorSet(MOBILE_LIFT, -127);
+			}
+			else if(joystickGetDigital(1, 7 , JOY_DOWN)){
+				motorSet(MOBILE_LIFT, 127);
+			}
+			else {
+					motorSet(MOBILE_LIFT, -30);
+			}
 
 
 		//Syncing lift speeds for left and right side using potentiometers
@@ -94,14 +104,14 @@ void operatorControl() {
 				c = 1;
 			}else if(joystickGetDigital(1, 8, JOY_DOWN)){ //lift goes down on button click
 				c = 0;
-				motorSet(LEFT_LIFT_MOTOR, 90);
-				motorSet(RIGHT_LIFT_MOTOR, 90);
+				motorSet(LEFT_LIFT_MOTOR, 50);
+				motorSet(RIGHT_LIFT_MOTOR, 50);
 				c = 2;
 			}else if(c == 1){
 				motorSet(LEFT_LIFT_MOTOR, -20); //hold power while the button is not being pressed
 				motorSet(RIGHT_LIFT_MOTOR, -20);
 
-			}else if(c ==2){
+			}else if(c == 2){
 				motorSet(LEFT_LIFT_MOTOR, -20); //hold power while the button is not being pressed
 				motorSet(RIGHT_LIFT_MOTOR, -20);
 
@@ -126,9 +136,9 @@ void operatorControl() {
 			 //beginning of the Claw code
 
 			if(joystickGetDigital(1, 8, JOY_LEFT)){
-				motorSet(CLAW, -30);
+				motorSet(CLAW, -50);
 			}else if(joystickGetDigital(1, 8 , JOY_RIGHT)){
-				motorSet(CLAW, 30);
+				motorSet(CLAW, 50);
 			}else {
 					motorSet(CLAW, 0);
 				}
@@ -302,7 +312,7 @@ void autoStack( ) {
 	motorSet(CLAW, -127);
 	delay(500);
 	motorSet(CLAW, 80);
-	delay(300);
+	delay(750);
 	motorSet(CLAW, 0);
 
 	delay(800);
