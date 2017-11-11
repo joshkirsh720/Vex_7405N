@@ -258,7 +258,7 @@ void liftMove(int position) {
 
 
 
-void autoStack(int maxLiftHeight, int maxChainbarHeight, int lowChainbarHeight ) {
+void autoStack( ) {
 	int a = 0;
 
 	motorSet(CLAW, 127);
