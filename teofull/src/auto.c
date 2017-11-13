@@ -47,38 +47,49 @@
  void chassisSet(int left, int right);
 
 void autonomous() {
+  motorSet(9, 127);
+  delay(200);
+  motorSet(9, 0);
+  motorSet(CLAW, 60);
+
   int leftIME=0, rightIME=0;
 
   //move forward
   chassisSet(127, 127);
-  delay(1657); // drive forward time
-  
+  delay(3200); // drive forward time
+
   chassisSet(0, 0);
 
 
   int a = 0;
 
 	motorSet(CHAINBAR, -127);
-	delay(300);
+	delay(500);
   motorSet(CHAINBAR, 0);
+  delay(200);
+
+	liftMove(900);// lift going up first time
 
 
-	liftMove(1000);// lift going up first time
+  motorSet(9, -127);
+  delay(500);
+  motorSet(9, -50);
+
 
 	motorSet(LEFT_LIFT_MOTOR, -20); //hold power while the button is not being pressed
 	motorSet(RIGHT_LIFT_MOTOR, -20);
 	printf("%s", " the current height of the lift is:");
 	printf("%d", abs(analogReadCalibrated(1)));
-	delay(1000);
+	delay(100);
 
 	motorSet(CHAINBAR, -127); // chainbar going down
-	delay(400);
+	delay(300);
 	motorSet(CHAINBAR, 0);
 	delay(600);
-	liftMove(700);
+	liftMove(850);
 
   motorSet(CHAINBAR, -127);
-  delay(600);
+  delay(50);
 
   motorSet(CHAINBAR, 0);
 
@@ -90,11 +101,18 @@ void autonomous() {
 
 	motorSet(CLAW, -120);
 	delay(400);
+  motorSet(LEFT_LIFT_MOTOR, -127);
+  motorSet(LEFT_LIFT_MOTOR, -127);
+  delay(200);
+  motorSet(LEFT_LIFT_MOTOR, 0);
+  motorSet(LEFT_LIFT_MOTOR, 0);
+
+
 	motorSet(CLAW, 80);
-	delay(750);
+	delay(250);
 	motorSet(CLAW, 0);
 
-	delay(800);
+
 
 
 	liftMove(990);
@@ -109,8 +127,27 @@ void autonomous() {
 	liftMove(200);
 
   chassisSet(-127, -127);
-  delay(1657);
+  delay(2500);
   chassisSet(0, 0);
+
+  chassisSet(-127, 127);
+  delay(1750);
+  chassisSet(0, 0);
+
+  chassisSet(127, 127);
+  delay(1000);
+
+
+  motorSet(9, 127);
+  delay(600);
+  motorSet(9, 0 );
+
+  chassisSet(-127, -127);
+  delay(900);
+  chassisSet(0, 0);
+
+
+
 
 
 
