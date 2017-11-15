@@ -37,7 +37,8 @@ void operatorControl() {
 
 		//if the right joystick is being moved horizontally
 		if(sideMotion != 0) {
-			//turn MAY BE BACKWARDS FIX
+			//turn
+			MAY BE BACKWARDS FIX
 			chassisSet(sideMotion, -sideMotion);
 		}
 		//if the left joystick is being moved vertically

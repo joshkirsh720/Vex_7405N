@@ -28,6 +28,8 @@
 #include <API.h>
 #include "functions.h"
 #define GYRO_PORT 0
+#define RIGHT_IME 0
+#define LEFT_IME 1
 
 // Allow usage of this file in C++ programs
 #ifdef __cplusplus

@@ -38,4 +38,5 @@ void initializeIO() {
  */
 void initialize() {
   gyro = gyroInit(GYRO_PORT, 196);
+  imeInitializeAll();
 }
