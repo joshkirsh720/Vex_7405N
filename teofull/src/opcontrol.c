@@ -44,6 +44,8 @@ void moveDrive(int forwardMotion, int sideMotion);
 
 int c = 0;
 
+int b = 0;
+
 void operatorControl() {
 	encoderReset(encoder);
 
@@ -147,6 +149,21 @@ void operatorControl() {
 			if(joystickGetDigital(1, 5, JOY_UP)){
 				autoStack();
 			}
+
+
+
+			if(joystickGetDigital(1, 7, JOY_UP)){
+				motorSet(9, -127);
+				b = 1;
+			}else if(joystickGetDigital(1, 7 , JOY_DOWN)){
+				motorSet(9, 50);
+				b = 0;
+			}else if( b == 1){
+				motorSet(9, -30);
+			}else {
+				motorSet(9, 0);
+			}
+
 
 		//input gathered, move botn
 		moveDrive(forwardMotion, sideMotion);
@@ -280,12 +297,11 @@ void autoStack( ) {
 	motorSet(RIGHT_LIFT_MOTOR, -20);
 	printf("%s", " the current height of the lift is:");
 	printf("%d", abs(analogReadCalibrated(1)));
-	delay(1000);
+	delay(200);
 
-	motorSet(CHAINBAR, -127);
-	delay(400);
+	motorSet(CHAINBAR, -100);
+	delay(250);
 	motorSet(CHAINBAR, 0);
-	delay(600);
 	a = 1;
 
 
@@ -309,16 +325,17 @@ void autoStack( ) {
 	printf("%d", abs(analogReadCalibrated(1)));
 	delay(500);
 
-	motorSet(CLAW, -127);
-	delay(500);
-	motorSet(CLAW, 80);
-	delay(750);
+	motorSet(CLAW, -120);
+	delay(400);
+	motorSet(CLAW, 0);
+	delay(300);
+	delay(300);
 	motorSet(CLAW, 0);
 
 	delay(800);
 
 
-	liftMove(990);
+	liftMove(1100);
 	motorSet(LEFT_LIFT_MOTOR, -20); //hold power while the button is not being pressed
 	motorSet(RIGHT_LIFT_MOTOR, -20);
 	delay(500);

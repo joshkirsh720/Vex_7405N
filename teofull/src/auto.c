@@ -22,6 +22,10 @@
 #define LEFT_LIFT_POT 2
 
 
+#define LEFT_IME 0
+#define RIGHT_IME 2
+
+
 /*
  * Runs the user autonomous code. This function will be started in its own task with the default
  * priority and stack size whenever the robot is enabled via the Field Management System or the
@@ -36,7 +40,118 @@
  * The autonomous task may exit, unlike operatorControl() which should never exit. If it does
  * so, the robot will await a switch to another mode or disable/enable cycle.
  */
+
+
+ void stop();
+ bool resetIMEs();
+ void chassisSet(int left, int right);
+
 void autonomous() {
+  motorSet(9, 127);
+  delay(200);
+  motorSet(9, 0);
+  motorSet(CLAW, 60);
+
+  int leftIME=0, rightIME=0;
+
+  //move forward
+  chassisSet(127, 127);
+  delay(3200); // drive forward time
+
+  chassisSet(0, 0);
+
+
+  int a = 0;
+
+	motorSet(CHAINBAR, -127);
+	delay(500);
+  motorSet(CHAINBAR, 0);
+  delay(200);
+
+	liftMove(900);// lift going up first time
+
+
+  motorSet(9, -127);
+  delay(500);
+  motorSet(9, -50);
+
+
+	motorSet(LEFT_LIFT_MOTOR, -20); //hold power while the button is not being pressed
+	motorSet(RIGHT_LIFT_MOTOR, -20);
+	printf("%s", " the current height of the lift is:");
+	printf("%d", abs(analogReadCalibrated(1)));
+	delay(100);
+
+	motorSet(CHAINBAR, -127); // chainbar going down
+	delay(300);
+	motorSet(CHAINBAR, 0);
+	delay(600);
+	liftMove(850);
+
+  motorSet(CHAINBAR, -127);
+  delay(50);
+
+  motorSet(CHAINBAR, 0);
+
+	motorSet(LEFT_LIFT_MOTOR, -20); //hold power while the button is not being pressed
+	motorSet(RIGHT_LIFT_MOTOR, -20);
+	printf("%s", " the current height of the lift is:");
+	printf("%d", abs(analogReadCalibrated(1)));
+	delay(500);
+
+	motorSet(CLAW, -120);
+	delay(400);
+  motorSet(LEFT_LIFT_MOTOR, -127);
+  motorSet(LEFT_LIFT_MOTOR, -127);
+  delay(200);
+  motorSet(LEFT_LIFT_MOTOR, 0);
+  motorSet(LEFT_LIFT_MOTOR, 0);
+
+
+	motorSet(CLAW, 80);
+	delay(250);
+	motorSet(CLAW, 0);
+
+
+
+
+	liftMove(990);
+	motorSet(LEFT_LIFT_MOTOR, -20); //hold power while the button is not being pressed
+	motorSet(RIGHT_LIFT_MOTOR, -20);
+	delay(500);
+
+
+	motorSet(CHAINBAR, 127);
+	delay(150);
+
+	liftMove(200);
+
+  chassisSet(-127, -127);
+  delay(2500);
+  chassisSet(0, 0);
+
+  chassisSet(-127, 127);
+  delay(1750);
+  chassisSet(0, 0);
+
+  chassisSet(127, 127);
+  delay(1000);
+
+
+  motorSet(9, 127);
+  delay(600);
+  motorSet(9, 0 );
+
+  chassisSet(-127, -127);
+  delay(900);
+  chassisSet(0, 0);
+
+
+
+
+
+
+
 
 
 }
