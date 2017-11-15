@@ -124,7 +124,7 @@ void operatorControl() {
 				c = 0;
 			}
 
-			//Beggening of chainbar code
+			//Beginning of chainbar code
 			if(joystickGetDigital(1, 7, JOY_RIGHT)){
 			 motorSet(CHAINBAR, 70);
 			}else if(joystickGetDigital(1, 7 , JOY_LEFT)){

@@ -32,32 +32,24 @@
 void operatorControl() {
 	while (1) {
 
+		int forwardMotion = joystickGetAnalog(1, 3);
+		int sideMotion = joystickGetAnalog(1, 1);
 
-		// integral - if Ki is not 0
-    if( pid_Ki != 0 ){
-        // If we are inside controlable window then integrate the error
-        if( abs(pidError) < PID_INTEGRAL_LIMIT )
-            pidIntegral = pidIntegral + pidError;
-        else
-            pidIntegral = 0;
-        }
-    else
-        pidIntegral = 0;
-
-    // calculate the derivative
-    pidDerivative = pidError - pidLastError;
-    pidLastError  = pidError;
-
-    // calculate drive
-    pidDrive = (pid_Kp * pidError) + (pid_Ki * pidIntegral) + (pid_Kd * pidDerivative);
-
-
-
-
-
-
-
-
+		//if the right joystick is being moved horizontally
+		if(sideMotion != 0) {
+			//turn MAY BE BACKWARDS FIX
+			chassisSet(sideMotion, -sideMotion);
+		}
+		//if the left joystick is being moved vertically
+		else if(forwardMotion != 0) {
+			//move forwards/backwards
+			chassisSet(forwardMotion, forwardMotion);
+		}
+		//if neither joystick is being moved
+		else {
+			//stop
+			chassisSet(0, 0);
+		}
 
 
 

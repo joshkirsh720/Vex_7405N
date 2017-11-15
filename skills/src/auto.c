@@ -56,8 +56,8 @@ void autonomous() {
 
   //move forward
   chassisSet(127, 127);
-  while(leftIME <= 2050 && rightIME >= -2050) {
-    imeGet(LEFT_IME, &leftIME);
+  while(leftIME <= 2050 && rightIME >= -2050) { //goes until the wheels have rotated a certain amount
+    imeGet(LEFT_IME, &leftIME); //updates the value of the IME variables
     imeGet(RIGHT_IME, &rightIME);
   }
   stop();
