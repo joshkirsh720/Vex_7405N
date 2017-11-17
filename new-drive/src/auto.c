@@ -27,4 +27,17 @@
  * so, the robot will await a switch to another mode or disable/enable cycle.
  */
 void autonomous() {
+
+  int leftIME=0, rightIME=0;
+  resetIMEs();
+
+  chassisSet(127, 127);
+  while(abs(leftIME) <= VALUE && abs(rightIME) <= VALUE) {
+    updateIMEs(&leftIME, &rightIME);
+
+    //checks gyro to make sure the robot is going in the right direction
+    gyroCheck();
+  }
+  chassisSet(0, 0);
+
 }
