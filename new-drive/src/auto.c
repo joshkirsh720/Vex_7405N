@@ -28,16 +28,20 @@
  */
 void autonomous() {
 
-  int leftIME=0, rightIME=0;
-  resetIMEs();
 
+  //set motor to move forward
   chassisSet(127, 127);
-  while(abs(leftIME) <= VALUE && abs(rightIME) <= VALUE) {
-    updateIMEs(&leftIME, &rightIME);
 
-    //checks gyro to make sure the robot is going in the right direction
-    gyroCheck();
-  }
+  
+  waitForIMEs(1440, straight);
+
+  //stop once the IMEs have reached the right amount of rotations
   chassisSet(0, 0);
+
+
+
+
+  //set motor to turn to the right
+  chassisSet(127, -127);
 
 }
