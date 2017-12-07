@@ -32,16 +32,31 @@ void autonomous() {
   //set motor to move forward
   chassisSet(127, 127);
 
-  
+  //wait until imes rotate a certain amount moving forward
   waitForIMEs(1440, straight);
 
   //stop once the IMEs have reached the right amount of rotations
   chassisSet(0, 0);
 
 
+  //set motor to turn to the left
+  chassisSet(-127, 127);
+
+  //wait until gyros have reached 180 degrees
+  accurateTurn(180, left);
+
+  //stop motors
+  chassisSet(0, 0);
 
 
-  //set motor to turn to the right
-  chassisSet(127, -127);
+
+  //set motor to move forward
+  chassisSet(127, 127);
+
+  //wait until imes rotate a certain amount moving forward
+  waitForIMEs(1000, straight);
+
+  //stop once the IMEs have reached the right amount of rotations
+  chassisSet(0, 0);
 
 }

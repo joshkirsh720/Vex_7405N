@@ -51,7 +51,7 @@ void operatorControl() {
 			chassisSet(0, 0);
 		}
 
-
+		printf("%d\n",gyroGet(gyro));
 
 		delay(20);
 	}

@@ -2,11 +2,12 @@
 #define _FUNCTIONS_H_
 
 #include <API.h>
-#define LEFT_MOTOR_PORT_1 4
+#define LEFT_MOTOR_PORT_1 5
 #define LEFT_MOTOR_PORT_2 7
 #define RIGHT_MOTOR_PORT_1 2
 #define RIGHT_MOTOR_PORT_2 8
-#define GYRO_PORT 1
+#define MOBILE_LIFT 4
+#define GYRO_PORT 3
 #define RIGHT_IME 0
 #define LEFT_IME 1
 
@@ -32,5 +33,12 @@ void gyroCheck(direction direc);
 
 //wait for IMEs to reach a certain value
 void waitForIMEs(int value, direction direc);
+
+//waits for the gyro to reach a certain value
+//only to be used when turning
+void waitForGyro(int degrees, direction direc);
+
+//turns then adjusts so that the turn is accurate
+void accurateTurn(int degrees, direction startingDirec);
 
 #endif
