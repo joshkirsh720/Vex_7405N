@@ -87,23 +87,32 @@ void waitForGyro(int degrees, direction direc) {
 
   int speed = 127;
 
-  //right is negative
-  //left is positive
-  //more than full turns will just add past 360
+  //if turning to the left
   if(direc == left) {
+    //wait for gyro to hit a certain amount
     while(gyroGet(gyro) < degrees) {
+      //decrement speed with the formula speed = -sqrt(x) + 127
       speed = -sqrt(50 * gyroGet(gyro)) + 127;
       chassisSet(-speed, speed);
-      printf("%d\n", speed);
     }
+    //quickly move in the opposite direction to undo overturning
+    chassisSet(speed, -speed);
+    chassisSet(0, 0);
   }
+  //if turning to the right
   else if(direc == right) {
+    //wait for gyro to hit a certain amount
     while(gyroGet(gyro) > -degrees) {
+      //decrement speed with the formula speed = -sqrt(x) + 127
       speed = -sqrt(50 * gyroGet(gyro)) + 127;
       chassisSet(speed, -speed);
-      printf("%d\n", speed);
     }
+    //quickly move in the opposite direction to undo overturning
+    chassisSet(-speed, speed);
+    chassisSet(0, 0);
   }
+  //reset gyro
+  gyroReset(gyro);
 }
 
 
