@@ -6,16 +6,24 @@
 #define LEFT_MOTOR_PORT_2 7
 #define RIGHT_MOTOR_PORT_1 2
 #define RIGHT_MOTOR_PORT_2 8
-#define MOBILE_LIFT 4
+#define MOBILE_LIFT 10
 #define GYRO_PORT 3
 #define RIGHT_IME 0
 #define LEFT_IME 1
+#define RIGHT_POTEN 1
+#define LEFT_POTEN 2
+#define LEFT_LIFT_MOTOR 3
+#define RIGHT_LIFT_MOTOR 6
+
 
 typedef enum {
   left,
   right,
   straight,
-  backwards
+  backwards,
+  up,
+  down,
+  still
 } direction;
 
 
@@ -40,5 +48,11 @@ void waitForGyro(int degrees, direction direc);
 
 //turns then adjusts so that the turn is accurate
 void accurateTurn(int degrees, direction startingDirec);
+
+//sets lift
+void liftSet(int left, int right);
+
+//sets mobile goal speed
+void mobileSet(int speed);
 
 #endif

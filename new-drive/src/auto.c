@@ -43,7 +43,7 @@ void autonomous() {
   chassisSet(-127, 127);
 
   //wait until gyros have reached 180 degrees
-  accurateTurn(180, left);
+  waitForGyro(180, left);
 
   //stop motors
   chassisSet(0, 0);

@@ -30,11 +30,16 @@
  * This task should never exit; it should end with some kind of infinite loop, even if empty.
  */
 void operatorControl() {
+
+	direction liftDirec;
+
 	while (1) {
 
+		//get input
 		int forwardMotion = joystickGetAnalog(1, 3);
 		int sideMotion = joystickGetAnalog(1, 1);
 
+		//START DRIVE CODE
 		//if the right joystick is being moved horizontally
 		if(sideMotion != 0) {
 			//turn
@@ -50,8 +55,38 @@ void operatorControl() {
 			//stop
 			chassisSet(0, 0);
 		}
+		//END DRIVE CODE
 
-		printf("%d\n",gyroGet(gyro));
+		//START LIFT CODE
+		if(joystickGetDigital(1, 8, JOY_UP)) {
+			liftDirec = up;
+			liftSet(127, 127);
+		}
+		else if(joystickGetDigital(1, 8, JOY_DOWN)) {
+			liftDirec = down;
+			liftSet(-127, -127);
+		}
+		/*else {
+			liftDirec = still;
+			liftSet(50, 50);
+		}*/
+
+		//adjust for potentiometers
+
+		//END LIFT CODE
+
+		//START MOBILE GOAL CODE
+		if(joystickGetDigital(1, 7, JOY_UP)) {
+			mobileSet(-127);
+		}
+		else if(joystickGetDigital(1, 7, JOY_DOWN)) {
+			mobileSet(127);
+		}
+		else {
+			//liftSet(50, 50);
+		}
+		//END MOBILE GOAL CODE
+
 
 		delay(20);
 	}

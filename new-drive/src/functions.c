@@ -1,7 +1,7 @@
 #include "functions.h"
 #include "main.h"
 #include <api.h>
-
+#include <math.h>
 
 
 
@@ -85,8 +85,6 @@ void waitForIMEs(int value, direction direc) {
 //ALWAYS RESET GYRO AFTER YOU'RE FINISHED
 void waitForGyro(int degrees, direction direc) {
 
-  printf("%s\n", "In the function");
-
   int speed = 127;
 
   //right is negative
@@ -94,16 +92,16 @@ void waitForGyro(int degrees, direction direc) {
   //more than full turns will just add past 360
   if(direc == left) {
     while(gyroGet(gyro) < degrees) {
-      speed = degrees / 1.5 + 7;
+      speed = -sqrt(50 * gyroGet(gyro)) + 127;
       chassisSet(-speed, speed);
-      printf("%d\n", gyroGet(gyro));
+      printf("%d\n", speed);
     }
   }
   else if(direc == right) {
     while(gyroGet(gyro) > -degrees) {
-      speed = degrees / 1.5 + 7;
+      speed = -sqrt(50 * gyroGet(gyro)) + 127;
       chassisSet(speed, -speed);
-      printf("%d\n", gyroGet(gyro));
+      printf("%d\n", speed);
     }
   }
 }
@@ -111,6 +109,10 @@ void waitForGyro(int degrees, direction direc) {
 
 
 void accurateTurn(int degrees, direction startingDirec) {
+
+
+
+
 /*
   int speed = 127;
 
@@ -159,4 +161,13 @@ void accurateTurn(int degrees, direction startingDirec) {
 
   printf("Done!");
   gyroReset(gyro);*/
+}
+
+void liftSet(int left, int right) {
+  motorSet(LEFT_LIFT_MOTOR, -left);
+  motorSet(RIGHT_LIFT_MOTOR, right);
+}
+
+void mobileSet(int speed) {
+  motorSet(MOBILE_LIFT, speed);
 }
