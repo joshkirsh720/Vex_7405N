@@ -32,8 +32,24 @@
 void operatorControl() {
 
 	direction liftDirec;
+	int imeLeft, imeRight;
 
 	while (1) {
+
+
+		//IME GET
+		if(joystickGetDigital(1,8,JOY_LEFT)) {
+			resetIMEs();
+		}
+
+
+		imeGet(RIGHT_IME, &imeLeft);
+		imeGet(LEFT_IME, &imeRight);
+		printf("Left IME: %d\n", imeLeft);
+		printf("Right IME: %d\n\n", imeRight);
+
+
+
 
 		//get input
 		int forwardMotion = joystickGetAnalog(1, 3);
@@ -66,24 +82,24 @@ void operatorControl() {
 			liftDirec = down;
 			liftSet(-127, -127);
 		}
-		/*else {
+		else {
 			liftDirec = still;
-			liftSet(50, 50);
-		}*/
+			liftSet(20, 20);
+		}
 
 		//adjust for potentiometers
 
 		//END LIFT CODE
 
 		//START MOBILE GOAL CODE
-		if(joystickGetDigital(1, 7, JOY_UP)) {
+		if(joystickGetDigital(1, 7, JOY_DOWN)) {
 			mobileSet(-127);
 		}
-		else if(joystickGetDigital(1, 7, JOY_DOWN)) {
+		else if(joystickGetDigital(1, 7, JOY_UP)) {
 			mobileSet(127);
 		}
 		else {
-			//liftSet(50, 50);
+			mobileSet(0);
 		}
 		//END MOBILE GOAL CODE
 

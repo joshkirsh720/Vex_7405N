@@ -60,10 +60,14 @@ void gyroCheck(direction direc) {
 
 
 
-void waitForIMEs(int value, direction direc) {
+void waitForIMEs(int value, direction direc, bool moveMobile) {
 
   int leftIME=0,rightIME=0,count=0;
+
   resetIMEs();
+
+  if(moveMobile) mobileSet(127);
+
 
   //until the IMEs have reached a certain amount of rotations
   while(abs(leftIME) <= value && abs(rightIME) <= value) {
@@ -75,7 +79,12 @@ void waitForIMEs(int value, direction direc) {
       //checks gyro to make sure the robot is going in the right direction
       if(direc != left && direc != right) gyroCheck(direc);
     }
+
+    if(moveMobile && rightIME>= 520 && leftIME >= 520) mobileSet(0);
+
     count++;
+
+
   }
 
   resetIMEs();

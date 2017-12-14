@@ -40,7 +40,7 @@ bool updateIMEs(int *left, int *right);
 void gyroCheck(direction direc);
 
 //wait for IMEs to reach a certain value
-void waitForIMEs(int value, direction direc);
+void waitForIMEs(int value, direction direc, bool moveMobile);
 
 //waits for the gyro to reach a certain value
 //only to be used when turning

@@ -28,15 +28,32 @@
  */
 void autonomous() {
 
+  gyroReset(gyro);
+  resetIMEs();
 
   //set motor to move forward
   chassisSet(127, 127);
 
   //wait until imes rotate a certain amount moving forward
-  waitForIMEs(1440, straight);
+  waitForIMEs(1750, straight, true);
 
   //stop once the IMEs have reached the right amount of rotations
   chassisSet(0, 0);
+
+
+  //bring mobile goal lift back
+  mobileSet(-127);
+
+  //wait until lift moves back
+  delay(900);
+
+  //stop mobile goal when in the right position
+  mobileSet(0);
+
+
+
+
+
 
 
   //set motor to turn to the left
@@ -48,16 +65,11 @@ void autonomous() {
   //stop motors
   chassisSet(0, 0);
 
-
-  
-
-
-
   //set motor to move forward
   chassisSet(127, 127);
 
   //wait until imes rotate a certain amount moving forward
-  waitForIMEs(1000, straight);
+  waitForIMEs(1000, straight, false);
 
   //stop once the IMEs have reached the right amount of rotations
   chassisSet(0, 0);
