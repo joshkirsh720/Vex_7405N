@@ -1,0 +1,2 @@
+CMakeLists.txt not found in C:\Users\TeoIg\Documents\Code\Vex_7405N
+Environment (MinGW/Cygwin) is not selected Configure

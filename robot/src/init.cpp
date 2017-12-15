@@ -39,9 +39,8 @@ void initializeIO() {
  */
 void initialize() {
 
-  analogCalibrate(1); //calibrating the potentiometer on the right side of the lift
-  analogCalibrate(2); //calibrating the potentiometer on the left side of the liftt
-  analogCalibrate(4); //clibrating the potentiometer on the chainbar
+  analogCalibrate(1);
+  analogCalibrate(2);
 
   encoder = encoderInit(4, 3, false);
 }

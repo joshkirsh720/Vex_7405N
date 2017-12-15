@@ -107,8 +107,6 @@ void drive();
 
 void liftMove(int position);
 
-void robotReset();
-
 Encoder encoder;
 
 
