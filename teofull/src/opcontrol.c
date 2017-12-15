@@ -225,11 +225,11 @@ void moveDrive(int forwardMotion, int sideMotion) {
 void chainbarMove(int position) { //takes in the desired position of the chainbar
     if(analogRead(4) > position){
       while(analogRead(4) > position) {
-        motorSet(CHAINBAR, 127);
+        motorSet(CHAINBAR, 80);
       }
     } else if (analogRead(4) < position){
         while(analogRead(4) < position) {
-          motorSet(CHAINBAR, -127);
+          motorSet(CHAINBAR, -80);
         }
       }
 
@@ -272,11 +272,11 @@ void liftMove(int position) {
 
     while (c == 1) {
 
-        if (rLiftPot < (lLiftPot - 100)) {
-            upSpeedLeft = -60;
+        if (rLiftPot < (lLiftPot)) {
+            upSpeedLeft = -40;
             upSpeedRight = 125;
-        } else if (lLiftPot < (rLiftPot - 100)) {
-            upSpeedRight = 60;
+        } else if (lLiftPot < (rLiftPot )) {
+            upSpeedRight = 40;
             upSpeedLeft = -125;
         } else {
             upSpeedRight = 125;
@@ -288,6 +288,7 @@ void liftMove(int position) {
             while ((abs(analogReadCalibrated(1)) > (position ))) {
                 motorSet(LEFT_LIFT_MOTOR, 15);
                 motorSet(RIGHT_LIFT_MOTOR, -15);
+                printf("%s \n","lift going up");
 
             }
             c = 0;
@@ -295,14 +296,15 @@ void liftMove(int position) {
             while ((abs(analogReadCalibrated(1)) < (position))) { // runs the code inside of the while loop until the values are close to that of the desired
                 motorSet(LEFT_LIFT_MOTOR, upSpeedLeft);
                 motorSet(RIGHT_LIFT_MOTOR, upSpeedRight);
+                printf("%s \n","lift going down");
             }
             c = 0;
 
         }
     }
 
-    motorSet(LEFT_LIFT_MOTOR, 0);
-    motorSet(RIGHT_LIFT_MOTOR, 0);
+    motorSet(LEFT_LIFT_MOTOR, -20); //hold power while the button is not being pressed
+    motorSet(RIGHT_LIFT_MOTOR, 20);
 
 
 
@@ -313,21 +315,24 @@ void liftMove(int position) {
 void autoStack() {
 
         int  liftHeight = 0;
-        int chainbarHeight = 1676;
+        int chainbarHeight = 1600;
 
           if (autoStackCounter == 1) {
             liftHeight = 150;
-            chainbarHeight = 1600;
+            chainbarHeight = 1610;
 
         } else if (autoStackCounter == 2) {
             liftHeight = 200;
-            chainbarHeight = 1630;
+            chainbarHeight = 1610;
         } else if (autoStackCounter == 3) {
-            liftHeight = 400;
+            liftHeight = 300;
+            chainbarHeight = 1560;
         } else if (autoStackCounter == 4) {
-            liftHeight = 550;
+            liftHeight = 650;
+            chainbarHeight = 1610;
         } else if (autoStackCounter == 5) {
             liftHeight = 950;
+            chainbarHeight = 1600;
         } else if (autoStackCounter == 6) {
             liftHeight = 1100;
         }
@@ -345,7 +350,6 @@ void autoStack() {
           motorSet(RIGHT_LIFT_MOTOR, 20);
           delay(150);
         }
-
         chainbarMove(chainbarHeight);
         liftMove(liftHeight);
         motorSet(LEFT_LIFT_MOTOR, -20); //hold power while the button is not being pressed
