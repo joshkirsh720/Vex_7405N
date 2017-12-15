@@ -40,13 +40,15 @@ void operatorControl() {
 		//IME GET
 		if(joystickGetDigital(1,8,JOY_LEFT)) {
 			resetIMEs();
+			gyroReset(gyro);
 		}
 
 
 		imeGet(RIGHT_IME, &imeLeft);
 		imeGet(LEFT_IME, &imeRight);
 		printf("Left IME: %d\n", imeLeft);
-		printf("Right IME: %d\n\n", imeRight);
+		printf("Right IME: %d\n", imeRight);
+		printf("Gyro Value: %d\n\n", gyroGet(gyro));
 
 
 

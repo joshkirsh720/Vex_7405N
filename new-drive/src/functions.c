@@ -84,7 +84,9 @@ void waitForIMEs(int value, direction direc, bool moveMobile) {
 
     count++;
 
-
+    printf("Gyro Value: %d\n", gyroGet(gyro));
+    printf("Left IME: %d\n", leftIME);
+    printf("Right IME: %d\n\n", rightIME);
   }
 
   resetIMEs();
