@@ -11,20 +11,6 @@
  */
 
 #include "main.h"
-#define LEFT_DRIVE 2
-#define RIGHT_DRIVE 4 //needs to be reversed
-#define LEFT_LIFT_MOTOR 3
-#define RIGHT_LIFT_MOTOR 6 //needs to be reversed
-#define CLAW 7
-#define CHAINBAR 5
-#define MOBILE_LIFT 8
-#define RIGHT_LIFT_POT 1
-#define LEFT_LIFT_POT 2
-
-
-#define LEFT_IME 0
-#define RIGHT_IME 2
-
 
 /*
  * Runs the user autonomous code. This function will be started in its own task with the default
@@ -40,118 +26,69 @@
  * The autonomous task may exit, unlike operatorControl() which should never exit. If it does
  * so, the robot will await a switch to another mode or disable/enable cycle.
  */
-
-
- void stop();
- bool resetIMEs();
- void chassisSet(int left, int right);
-
 void autonomous() {
-  motorSet(9, 127);
-  delay(200);
-  motorSet(9, 0);
-  motorSet(CLAW, 60);
 
-  int leftIME=0, rightIME=0;
+  gyroReset(gyro);
+  resetIMEs();
+  printf("Gyro Value: %d\n\n\n", gyroGet(gyro));
 
-  //move forward
+
+  printf("Step 1\n");
+  //set motor to move forward
   chassisSet(127, 127);
-  delay(3200); // drive forward time
 
+  printf("Step 2\n");
+  //wait until imes rotate a certain amount moving forward
+  waitForIMEs(1750, straight, true);
+
+  printf("Step 3\n");
+  //stop once the IMEs have reached the right amount of rotations
   chassisSet(0, 0);
 
+  printf("Step 4\n");
+  //bring mobile goal lift back
+  mobileSet(-127);
 
-  int a = 0;
-
-	motorSet(CHAINBAR, -127);
-	delay(500);
-  motorSet(CHAINBAR, 0);
-  delay(200);
-
-	liftMove(900);// lift going up first time
-
-
-  motorSet(9, -127);
-  delay(500);
-  motorSet(9, -50);
-
-
-	motorSet(LEFT_LIFT_MOTOR, -20); //hold power while the button is not being pressed
-	motorSet(RIGHT_LIFT_MOTOR, -20);
-	printf("%s", " the current height of the lift is:");
-	printf("%d", abs(analogReadCalibrated(1)));
-	delay(100);
-
-	motorSet(CHAINBAR, -127); // chainbar going down
-	delay(300);
-	motorSet(CHAINBAR, 0);
-	delay(600);
-	liftMove(850);
-
-  motorSet(CHAINBAR, -127);
-  delay(50);
-
-  motorSet(CHAINBAR, 0);
-
-	motorSet(LEFT_LIFT_MOTOR, -20); //hold power while the button is not being pressed
-	motorSet(RIGHT_LIFT_MOTOR, -20);
-	printf("%s", " the current height of the lift is:");
-	printf("%d", abs(analogReadCalibrated(1)));
-	delay(500);
-
-	motorSet(CLAW, -120);
-	delay(400);
-  motorSet(LEFT_LIFT_MOTOR, -127);
-  motorSet(LEFT_LIFT_MOTOR, -127);
-  delay(200);
-  motorSet(LEFT_LIFT_MOTOR, 0);
-  motorSet(LEFT_LIFT_MOTOR, 0);
-
-
-	motorSet(CLAW, 80);
-	delay(250);
-	motorSet(CLAW, 0);
-
-
-
-
-	liftMove(990);
-	motorSet(LEFT_LIFT_MOTOR, -20); //hold power while the button is not being pressed
-	motorSet(RIGHT_LIFT_MOTOR, -20);
-	delay(500);
-
-
-	motorSet(CHAINBAR, 127);
-	delay(150);
-
-	liftMove(200);
-
-  chassisSet(-127, -127);
-  delay(2500);
-  chassisSet(0, 0);
-
-  chassisSet(-127, 127);
-  delay(1750);
-  chassisSet(0, 0);
-
-  chassisSet(127, 127);
-  delay(1000);
-
-
-  motorSet(9, 127);
-  delay(600);
-  motorSet(9, 0 );
-
-  chassisSet(-127, -127);
+  printf("Step 5\n");
+  //wait until lift moves back
   delay(900);
+
+  printf("Step 6\n");
+  //stop mobile goal lift when in the right position
+  mobileSet(0);
+
+
+  printf("Step 6.5\n");
+  chassisSet(-127,-127);
+
+  delay(100);
+
+  printf("Step 6.55\n");
   chassisSet(0, 0);
 
 
+  printf("Step 7\n");
+  //set motor to turn to the left
+  chassisSet(-127, 127);
 
+  printf("Step 8\n");
+  //wait until gyros have reached 180 degrees
+  waitForGyro(180, left);
 
+  printf("Step 9\n");
+  //stop motors
+  chassisSet(0, 0);
 
+  printf("Step 10\n");
+  //set motor to move forward
+  chassisSet(127, 127);
 
+  printf("Step 11\n");
+  //wait until imes rotate a certain amount moving forward
+  waitForIMEs(1000, straight, false);
 
-
+  printf("Step 12\n");
+  //stop once the IMEs have reached the right amount of rotations
+  chassisSet(0, 0);
 
 }

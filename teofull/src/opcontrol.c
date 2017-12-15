@@ -65,7 +65,27 @@ void operatorControl() {
 
     while (1) {
 
+      //get input
+  		int forwardMotion = joystickGetAnalog(1, 3);
+  		int sideMotion = joystickGetAnalog(1, 1);
 
+  		//START DRIVE CODE
+  		//if the right joystick is being moved horizontally
+  		if(sideMotion != 0) {
+  			//turn
+  			chassisSet(sideMotion, -sideMotion);
+  		}
+  		//if the left joystick is being moved vertically
+  		else if(forwardMotion != 0) {
+  			//move forwards/backwards
+  			chassisSet(forwardMotion, forwardMotion);
+  		}
+  		//if neither joystick is being moved
+  		else {
+  			//stop
+  			chassisSet(0, 0);
+  		}
+  		//END DRIVE CODE
 
 
 

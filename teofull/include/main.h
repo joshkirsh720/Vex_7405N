@@ -26,6 +26,7 @@
 #define MAIN_H_
 
 #include <API.h>
+#include "functions.h"
 
 
 // Allow usage of this file in C++ programs
@@ -110,6 +111,8 @@ void liftMove(int position);
 void robotReset();
 
 Encoder encoder;
+
+Gyro gyro;
 
 
 // End C++ export structure

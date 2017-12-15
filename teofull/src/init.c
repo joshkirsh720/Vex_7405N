@@ -44,4 +44,6 @@ void initialize() {
   analogCalibrate(4); //clibrating the potentiometer on the chainbar
 
   encoder = encoderInit(4, 3, false);
+  gyro = gyroInit(GYRO_PORT, 196);
+  imeInitializeAll();
 }
