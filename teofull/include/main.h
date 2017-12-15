@@ -99,7 +99,7 @@ void moveDrive();
 
 void chasisSet();
 
-void chainbarMove();
+void chainbarMove(int position);
 
 void autoStack();
 
