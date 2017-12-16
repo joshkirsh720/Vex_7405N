@@ -77,7 +77,7 @@ void waitForIMEs(int value, direction direc, bool moveMobile) {
 
     if(count%20==0){
       //checks gyro to make sure the robot is going in the right direction
-      if(direc != left && direc != right) gyroCheck(direc);
+      //if(direc != left && direc != right) gyroCheck(direc);
     }
 
     if(moveMobile && rightIME>= 520 && leftIME >= 520) mobileSet(0);

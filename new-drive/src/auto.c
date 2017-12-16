@@ -12,16 +12,6 @@
 
 #include "main.h"
 
-#define LEFT_DRIVE 5
-#define RIGHT_DRIVE 2 //needs to be reversed
-#define LEFT_LIFT_MOTOR 3
-#define RIGHT_LIFT_MOTOR 6 //needs to be reversed
-#define CLAW 4
-#define CHAINBAR 9
-#define MOBILE_LIFT 10
-#define RIGHT_LIFT_POT 1
-#define LEFT_LIFT_POT 2
-
 /*
  * Runs the user autonomous code. This function will be started in its own task with the default
  * priority and stack size whenever the robot is enabled via the Field Management System or the
@@ -38,34 +28,67 @@
  */
 void autonomous() {
 
-  motorSet(CLAW, 30);
-  chassisSet(127,127)
-  delay(2000);
+  gyroReset(gyro);
+  resetIMEs();
+  printf("Gyro Value: %d\n\n\n", gyroGet(gyro));
 
-  motorSet(MOBILE_LIFT, 127);
-  delay(400);
-  motorSet(MOBILE_LIFT, 0 );
 
-  chainbarMove(1600);
-  motorSet(CLAW, -127);
-  delay(500);
-  motorSet(CLAW, 0);
+  printf("Step 1\n");
+  //set motor to move forward
+  chassisSet(127, 127);
 
-  chassisSet(-127, -127);
+  printf("Step 2\n");
+  //wait until imes rotate a certain amount moving forward
+  waitForIMEs(1750, straight, true);
 
-  chassisSet(127, -127);
-  delay(700);
+  printf("Step 3\n");
+  //stop once the IMEs have reached the right amount of rotations
   chassisSet(0, 0);
 
+  printf("Step 4\n");
+  //bring mobile goal lift back
+  mobileSet(-127);
+
+  printf("Step 5\n");
+  //wait until lift moves back
+  delay(900);
+
+  printf("Step 6\n");
+  //stop mobile goal lift when in the right position
+  mobileSet(0);
+
+
+  printf("Step 6.5\n");
+  chassisSet(-127,-127);
+
+  delay(100);
+
+  printf("Step 6.55\n");
+  chassisSet(0, 0);
+
+
+  printf("Step 7\n");
+  //set motor to turn to the left
+  chassisSet(-127, 127);
+
+  printf("Step 8\n");
+  //wait until gyros have reached 180 degrees
+  waitForGyro(180, left);
+
+  printf("Step 9\n");
+  //stop motors
+  chassisSet(0, 0);
+
+  printf("Step 10\n");
+  //set motor to move forward
   chassisSet(127, 127);
-  delay(500);
 
-  motorSet(MOBILE_LIFT, -127);
-  delay(200);
-  chassisSet(-127, -127);
-  delay(300);
-  motorSet(MOBILE_LIFT, 0);
+  printf("Step 11\n");
+  //wait until imes rotate a certain amount moving forward
+  waitForIMEs(1000, straight, false);
 
+  printf("Step 12\n");
+  //stop once the IMEs have reached the right amount of rotations
   chassisSet(0, 0);
 
 }
