@@ -110,6 +110,8 @@ void liftMove(int position);
 
 void robotReset();
 
+void matchLoad();
+
 Encoder encoder;
 
 Gyro gyro;
