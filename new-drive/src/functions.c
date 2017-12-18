@@ -83,10 +83,6 @@ void waitForIMEs(int value, direction direc, bool moveMobile) {
     if(moveMobile && rightIME>= 520 && leftIME >= 520) mobileSet(0);
 
     count++;
-
-    printf("Gyro Value: %d\n", gyroGet(gyro));
-    printf("Left IME: %d\n", leftIME);
-    printf("Right IME: %d\n\n", rightIME);
   }
 
   resetIMEs();
@@ -104,6 +100,7 @@ void waitForGyro(int degrees, direction direc) {
     while(gyroGet(gyro) < degrees) {
       //decrement speed with the formula speed = -sqrt(x) + 127
       speed = -sqrt(50 * gyroGet(gyro)) + 127;
+      printf("Gyro Value: %d\n", gyroGet(gyro));
       chassisSet(-speed, speed);
     }
     //quickly move in the opposite direction to undo overturning
@@ -116,6 +113,7 @@ void waitForGyro(int degrees, direction direc) {
     while(gyroGet(gyro) > -degrees) {
       //decrement speed with the formula speed = -sqrt(x) + 127
       speed = -sqrt(50 * gyroGet(gyro)) + 127;
+      printf("Gyro Value: %d\n", gyroGet(gyro));
       chassisSet(speed, -speed);
     }
     //quickly move in the opposite direction to undo overturning
