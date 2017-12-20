@@ -24,8 +24,14 @@ public:
   void mobileGoalLiftSet(int move);
 
   int readIME(int port);
+  int readPotenUncalibrated(int port);
+  int readGyro();
+
+  //PRECONDITION: Potentiometer must be calibrated
   int readPoten(int port);
-  int readGyro(int port);
+
+  void resetIMEs();
+  void resetGyro();
 
   Robot();
 };
