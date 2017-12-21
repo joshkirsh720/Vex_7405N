@@ -99,7 +99,8 @@ void waitForGyro(int degrees, direction direc) {
     //wait for gyro to hit a certain amount
     while(gyroGet(gyro) < degrees) {
       //decrement speed with the formula speed = -sqrt(x) + 127
-      speed = -sqrt(50 * gyroGet(gyro)) + 127;
+      if(speed >= 0) speed = -sqrt(50 * gyroGet(gyro)) + 127;
+      else speed = 127;
       printf("Gyro Value: %d\n", gyroGet(gyro));
       chassisSet(-speed, speed);
     }
@@ -112,7 +113,8 @@ void waitForGyro(int degrees, direction direc) {
     //wait for gyro to hit a certain amount
     while(gyroGet(gyro) > -degrees) {
       //decrement speed with the formula speed = -sqrt(x) + 127
-      speed = -sqrt(50 * gyroGet(gyro)) + 127;
+      if(speed >= 0) speed = -sqrt(50 * gyroGet(gyro)) + 127;
+      else speed = 127;
       printf("Gyro Value: %d\n", gyroGet(gyro));
       chassisSet(speed, -speed);
     }
@@ -212,9 +214,11 @@ void restIntake(int stacked) {
   else if(analogReadCalibrated(CHAINBAR_POTEN) < parralelValue) speed = 80;
   else speed = holdPower;
 
+  chainbarSet(speed);
+
   //wait until chainbar hits the right value, then hold power
   while(analogReadCalibrated(CHAINBAR_POTEN) != parralelValue);
-  speed = holdPower;
+  chainbarSet(holdPower);
 
   //move lift up
   liftSet(127, 127);

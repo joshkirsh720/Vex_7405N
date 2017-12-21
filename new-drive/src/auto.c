@@ -1,4 +1,4 @@
-/** @file auto.c
+  /** @file auto.c
  * @brief File for autonomous code
  *
  * This file should contain the user autonomous() function and any functions related to it.
@@ -69,7 +69,7 @@ void autonomous() {
 
   printf("Step 7\n");
   //set motor to turn to the left
-  chassisSet(-127, 127);
+  chassisSet(127, -127);
 
   printf("Step 8\n");
   //wait until gyros have reached 180 degrees
