@@ -16,7 +16,7 @@
 #define RIGHT_DRIVE 2 //needs to be reversed
 #define LEFT_LIFT_MOTOR 3
 #define RIGHT_LIFT_MOTOR 6 //needs to be reversed
-#define CLAW 4
+#define INTAKE_MOTOR 4
 #define CHAINBAR 9
 #define MOBILE_LIFT 10
 #define RIGHT_LIFT_POT 1
@@ -55,6 +55,7 @@ int b = 0;
 int autoStackBreaker = 0;
 int autoStackCounter = 0;
 
+int chainbarBreaker = 0;
 int matchLoadCounter = 0;
 
 
@@ -86,6 +87,8 @@ void operatorControl() {
   		}
   		//END DRIVE CODE
 
+      printf("%d \n", analogRead(4));
+
 
 
 
@@ -105,15 +108,19 @@ void operatorControl() {
         //get potentiomemter values from the left lift potentiometer
         int lLiftPot = abs(analogReadCalibrated(2));
 
+        printf("%d \n",analogReadCalibrated(lLiftPot));
+        printf("%d \n",analogReadCalibrated(rLiftPot));
+        printf("%s \n","-----------------------------------------------------");
+
 
 
 
 
         //Syncing lift speeds for left and right side using potentiometers
-        if (rLiftPot < (lLiftPot - 50)) {
+        if (rLiftPot < (lLiftPot + 300)) {
             upSpeedLeft = -60;
             upSpeedRight = 125;
-        } else if (lLiftPot < (rLiftPot - 50)) {
+        } else if (lLiftPot < (rLiftPot - 250)) {
             upSpeedRight = 60;
             upSpeedLeft = -125;
         } else {
@@ -165,11 +172,11 @@ void operatorControl() {
 
         //Start of Intake code
         if (joystickGetDigital(1, 7, JOY_UP)) {
-            motorSet(CLAW, -127);
+            motorSet(INTAKE_MOTOR, -127);
         } else if (joystickGetDigital(1, 7, JOY_DOWN)) {
-            motorSet(CLAW, 50);
+            motorSet(INTAKE_MOTOR, 50);
         } else {
-            motorSet(CLAW, 0);
+            motorSet(INTAKE_MOTOR, 0);
         }
 
         //end of intake code
@@ -192,18 +199,11 @@ void operatorControl() {
 
 
         //autoStack joyStick controls
-        if (joystickGetDigital(1, 5, JOY_UP)) {
-            autoStack();
-            printf("%d \n", autoStackCounter);
-            autoStackCounter++;
-        }else if (joystickGetDigital(1, 5, JOY_DOWN)){
-            autoStackCounter = 0;
-        }
+
 
 
         //autoStack joyStick controls
         if (joystickGetDigital(1, 6, JOY_UP)) {
-            matchLoad();
             printf("%d \n", autoStackCounter);
             matchLoadCounter++;
         }else if (joystickGetDigital(1, 6, JOY_DOWN)){
@@ -240,11 +240,11 @@ void chainbarMove(int position) { //takes in the desired position of the chainba
 
 void intakeMove(int direction) {
     if (direction == 1) {
-        motorSet(CLAW, 127);
+        motorSet(INTAKE_MOTOR, 127);
     } else if (direction == -1) {
-        motorSet(CLAW, -127);
+        motorSet(INTAKE_MOTOR, -127);
     } else if (direction == 0) {
-        motorSet(CLAW, 15);
+        motorSet(INTAKE_MOTOR, 15);
     }
 }
 
@@ -268,31 +268,31 @@ void liftMove(int position) {
     //get potentiomemter values from the left lift potentiometer
     int lLiftPot = abs(analogReadCalibrated(2));
 
-    if (rLiftPot < (lLiftPot - 50)) {
+    if (rLiftPot < (lLiftPot - 100)) {
         upSpeedLeft = -40;
-        upSpeedRight = 80;
-    } else if (lLiftPot < (rLiftPot - 50)) {
+        upSpeedRight = 70;
+    } else if (lLiftPot < (rLiftPot - 100)){
         upSpeedRight = 40;
-        upSpeedLeft = -80;
+        upSpeedLeft = -70;
     } else {
-        upSpeedRight = 80;
-        upSpeedLeft = -80;
+        upSpeedRight = 70;
+        upSpeedLeft = -70;
     }
 
 
 
     if(analogReadCalibrated(2) < position){
       while(analogReadCalibrated(2) < position){
-        motorSet(LEFT_LIFT_MOTOR, upSpeedLeft);
-        motorSet(RIGHT_LIFT_MOTOR, upSpeedRight);
+        motorSet(LEFT_LIFT_MOTOR, -80);
+        motorSet(RIGHT_LIFT_MOTOR, 90);
 
       }
 
 
     }else if(analogReadCalibrated(2) > position){
       while(analogReadCalibrated(2) > position){
-        motorSet(LEFT_LIFT_MOTOR, -upSpeedLeft);
-        motorSet(RIGHT_LIFT_MOTOR, -upSpeedRight);
+        motorSet(LEFT_LIFT_MOTOR, 95);
+        motorSet(RIGHT_LIFT_MOTOR, -90);
 
       }
 
@@ -307,16 +307,16 @@ void liftMove(int position) {
 void autoStack() {
 
         int liftHeight = 0;
-        int chainbarHeight = 1320;
+        int chainbarHeight = 1400;
 
         if (autoStackCounter == 1) {
             liftHeight = 150;
-            chainbarHeight = 1340;
+            chainbarHeight = 1360;
         } else if (autoStackCounter == 2) {
-            liftHeight = 250;
+            liftHeight = 350;
             chainbarHeight = 1400;
         } else if (autoStackCounter == 3) {
-            liftHeight = 400;
+            liftHeight = 500;
             chainbarHeight = 1350;
         } else if (autoStackCounter == 4) {
             liftHeight = 800;
@@ -330,112 +330,14 @@ void autoStack() {
 
 
 
-        motorSet(CLAW, 60);
+        motorSet(INTAKE_MOTOR, 60);
         delay(500);
-        motorSet(CLAW, 30);
+        motorSet(INTAKE_MOTOR, 30);
         printf("%s \n", "intake");
-        chainbarMove(2000);
-        if(autoStackCounter > 1){
+        chainbarMove(2300);
 
-          liftMove(50);
-          motorSet(LEFT_LIFT_MOTOR, -20); //hold power while the button is not being pressed
-          motorSet(RIGHT_LIFT_MOTOR, 20);
-          delay(150);
-        }
         chainbarMove(chainbarHeight);
-        if(autoStackCounter > 0){
-          liftMove(liftHeight);
-          motorSet(LEFT_LIFT_MOTOR, -20); //hold power while the button is not being pressed
-          motorSet(RIGHT_LIFT_MOTOR, 20);
-          liftMove(liftHeight -30);
-          motorSet(LEFT_LIFT_MOTOR, -20); //hold power while the button is not being pressed
-          motorSet(RIGHT_LIFT_MOTOR, 20);
 
-
-        }
-
-        delay(100);
-        motorSet(CLAW, -60);
-        c = 0;
-        delay(400);
-        motorSet(CLAW, 0);
-        if(autoStackCounter > 0){
-          liftMove(liftHeight +50);
-          motorSet(LEFT_LIFT_MOTOR, -20); //hold power while the button is not being pressed
-          motorSet(RIGHT_LIFT_MOTOR, 20);
-
-        }
-        chainbarMove(1900);
-
-
-
-
-
-}
-
-
-void matchLoad() {
-
-        int liftHeight = 0;
-        int chainbarHeight = 1450;
-
-        if (matchLoadCounter == 1) {
-            liftHeight = 150;
-            chainbarHeight = 1470;
-        } else if (matchLoadCounter == 2) {
-            liftHeight = 250;
-            chainbarHeight = 1520;
-        } else if (matchLoadCounter == 3) {
-            liftHeight = 400;
-            chainbarHeight = 1470;
-        } else if (matchLoadCounter == 4) {
-            liftHeight = 800;
-            chainbarHeight = 1530;
-        } else if (matchLoadCounter == 5) {
-            liftHeight = 950;
-            chainbarHeight = 1600;
-        } else if (matchLoadCounter == 6) {
-            liftHeight = 1100;
-        }
-
-
-
-        motorSet(CLAW, 60);
-        delay(500);
-        motorSet(CLAW, 30);
-        printf("%s \n", "intake");
-        chainbarMove(2000);
-        if(MAtchLoadCounter > 1){
-
-          liftMove(50);
-          motorSet(LEFT_LIFT_MOTOR, -20); //hold power while the button is not being pressed
-          motorSet(RIGHT_LIFT_MOTOR, 20);
-          delay(150);
-        }
-        chainbarMove(chainbarHeight);
-        if(matchLoadCounter > 0){
-          liftMove(liftHeight);
-          motorSet(LEFT_LIFT_MOTOR, -20); //hold power while the button is not being pressed
-          motorSet(RIGHT_LIFT_MOTOR, 20);
-          liftMove(liftHeight -30);
-          motorSet(LEFT_LIFT_MOTOR, -20); //hold power while the button is not being pressed
-          motorSet(RIGHT_LIFT_MOTOR, 20);
-
-
-        }
-
-        delay(100);
-        motorSet(CLAW, -60);
-        c = 0;
-        delay(400);
-        motorSet(CLAW, 0);
-        if(MatchLoadCounter > 0){
-          liftMove(liftHeight +50);
-          motorSet(LEFT_LIFT_MOTOR, -20); //hold power while the button is not being pressed
-          motorSet(RIGHT_LIFT_MOTOR, 20);
-
-        }
-        chainbarMove(1900);
 
 
 

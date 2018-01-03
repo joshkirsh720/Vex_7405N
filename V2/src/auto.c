@@ -11,15 +11,7 @@
  */
 
 #include "main.h"
-#define LEFT_DRIVE 5
-#define RIGHT_DRIVE 2 //needs to be reversed
-#define LEFT_LIFT_MOTOR 3
-#define RIGHT_LIFT_MOTOR 6 //needs to be reversed
-#define CLAW 4
-#define CHAINBAR 9
-#define MOBILE_LIFT 10
-#define RIGHT_LIFT_POT 1
-#define LEFT_LIFT_POT 2
+
 /*
  * Runs the user autonomous code. This function will be started in its own task with the default
  * priority and stack size whenever the robot is enabled via the Field Management System or the
@@ -35,46 +27,4 @@
  * so, the robot will await a switch to another mode or disable/enable cycle.
  */
 void autonomous() {
-  motorSet(MOBILE_LIFT, 127);
-  delay(1100);
-  motorSet(MOBILE_LIFT, 0);
-
-  motorSet(CLAW, 30);
-  chassisSet(127,127);
-  delay(1700);
-
-  motorSet(MOBILE_LIFT, 127);
-  delay(300);
-  motorSet(MOBILE_LIFT, 0);
-
-  chassisSet(0, 0);
-
-  motorSet(MOBILE_LIFT, -127);
-  delay(1100);
-  motorSet(MOBILE_LIFT, 0 );
-
-  //chainbarMove(1600);
-  //motorSet(CLAW, -127);
-  delay(500);
-  //motorSet(CLAW, 0);
-
-  chassisSet(-127, -127);
-  delay(1000);
-
-  chassisSet(-127, 127);
-  delay(1150);
-  chassisSet(0, 0);
-
-  chassisSet(127, 127);
-  delay(1100);
-
-  motorSet(MOBILE_LIFT, 127);
-  delay(700);
-  chassisSet(-127, -127);
-  delay(900);
-  motorSet(MOBILE_LIFT, 0);
-
-  chassisSet(0, 0);
-
-
 }
