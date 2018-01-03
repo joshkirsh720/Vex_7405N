@@ -1,4 +1,4 @@
-  /** @file auto.c
+/** @file auto.c
  * @brief File for autonomous code
  *
  * This file should contain the user autonomous() function and any functions related to it.
@@ -11,7 +11,7 @@
  */
 
 #include "main.h"
-
+#define _ 0
 /*
  * Runs the user autonomous code. This function will be started in its own task with the default
  * priority and stack size whenever the robot is enabled via the Field Management System or the
@@ -27,68 +27,48 @@
  * so, the robot will await a switch to another mode or disable/enable cycle.
  */
 void autonomous() {
-
   gyroReset(gyro);
-  resetIMEs();
+  imeReset(0);
+  imeReset(1);
 
+  bool useTime = true;
 
+  //move mobile goal down
+  mobileLiftSet(127);
+  delay(1000);
+  mobileLiftSet(0);
 
-  printf("Step 1\n");
-  //set motor to move forward
+  //move forwards
   chassisSet(127, 127);
-
-  printf("Step 2\n");
-  //wait until imes rotate a certain amount moving forward
-  waitForIMEs(1750, straight, true);
-
-  printf("Step 3\n");
-  //stop once the IMEs have reached the right amount of rotations
+  useTime ? delay(1900) : imeWait(1700);
   chassisSet(0, 0);
 
-  printf("Step 4\n");
-  //bring mobile goal lift back
-  mobileSet(-127);
+  //move mobile goal up
+  mobileLiftSet(-127);
+  delay(1000);
+  mobileLiftSet(0);
 
-  printf("Step 5\n");
-  //wait until lift moves back
-  delay(900);
-
-  printf("Step 6\n");
-  //stop mobile goal lift when in the right position
-  mobileSet(0);
-
-
-  printf("Step 6.5\n");
-  chassisSet(-127,-127);
-
-  delay(100);
-
-  printf("Step 6.55\n");
+  //move backwards
+  chassisSet(-127, -127);
+  useTime ? delay(1500) : imeWait(-850);
   chassisSet(0, 0);
 
-
-  printf("Step 7\n");
-  //set motor to turn to the left
+  //turn to the right
   chassisSet(127, -127);
-
-  printf("Step 8\n");
-  //wait until gyros have reached 180 degrees
-  waitForGyro(180, left);
-
-  printf("Step 9\n");
-  //stop motors
+  useTime ? delay(800) : gyroTurn(-135);
+  chassisSet(-127, 127);
   chassisSet(0, 0);
 
-  printf("Step 10\n");
-  //set motor to move forward
+
+  //FOLLOWING CODE HAS DUMMY VALUES THAT SHOULD BE CHANGED
+  //move forward
   chassisSet(127, 127);
+  useTime ? delay(500) : imeWait(_);
+  chassisSet(0, 0);
 
-  printf("Step 11\n");
-  //wait until imes rotate a certain amount moving forward
-  waitForIMEs(1000, straight, false);
-
-  printf("Step 12\n");
-  //stop once the IMEs have reached the right amount of rotations
+  //turn to face goal
+  chassisSet(127, -127);
+  useTime ? delay(400) : gyroTurn(_);
   chassisSet(0, 0);
 
 }

@@ -37,10 +37,4 @@ void initializeIO() {
  * can be implemented in this task if desired.
  */
 void initialize() {
-  gyro = gyroInit(GYRO_PORT, 196);
-  imeInitializeAll();
-
-  analogCalibrate(CHAINBAR_POTEN);
-  analogCalibrate(LEFT_POTEN);
-  analogCalibrate(RIGHT_POTEN);
 }

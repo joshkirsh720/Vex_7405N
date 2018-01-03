@@ -83,10 +83,6 @@ void waitForIMEs(int value, direction direc, bool moveMobile) {
     if(moveMobile && rightIME>= 520 && leftIME >= 520) mobileSet(0);
 
     count++;
-
-    printf("Gyro Value: %d\n", gyroGet(gyro));
-    printf("Left IME: %d\n", leftIME);
-    printf("Right IME: %d\n\n", rightIME);
   }
 
   resetIMEs();
@@ -103,7 +99,9 @@ void waitForGyro(int degrees, direction direc) {
     //wait for gyro to hit a certain amount
     while(gyroGet(gyro) < degrees) {
       //decrement speed with the formula speed = -sqrt(x) + 127
-      speed = -sqrt(50 * gyroGet(gyro)) + 127;
+      if(speed >= 0) speed = -sqrt(50 * gyroGet(gyro)) + 127;
+      else speed = 127;
+      printf("Gyro Value: %d\n", gyroGet(gyro));
       chassisSet(-speed, speed);
     }
     //quickly move in the opposite direction to undo overturning
@@ -115,7 +113,9 @@ void waitForGyro(int degrees, direction direc) {
     //wait for gyro to hit a certain amount
     while(gyroGet(gyro) > -degrees) {
       //decrement speed with the formula speed = -sqrt(x) + 127
-      speed = -sqrt(50 * gyroGet(gyro)) + 127;
+      if(speed >= 0) speed = -sqrt(50 * gyroGet(gyro)) + 127;
+      else speed = 127;
+      printf("Gyro Value: %d\n", gyroGet(gyro));
       chassisSet(speed, -speed);
     }
     //quickly move in the opposite direction to undo overturning
@@ -190,4 +190,76 @@ void liftSet(int left, int right) {
 
 void mobileSet(int speed) {
   motorSet(MOBILE_LIFT, speed);
+}
+
+void chainbarSet(int speed) {
+  motorSet(CHAINBAR, speed);
+}
+
+//PRECONDITION: 0 < stacked <= 10
+void restIntake(int stacked) {
+  //heights array such that index 0 is the height necessary when one cone is stacked, index 1 for 2, etc.
+  int heights[10] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+
+  int top = heights[stacked - 1];
+  int speed = 0;
+
+  //NEED TO BE GIVEN VALUES LATER
+  int parralelValue = 0;
+  int holdPower = 0;
+  int aboveStackValue = 0;
+
+  //moves chainbar to be parallel to the floor
+  if(analogReadCalibrated(CHAINBAR_POTEN) > parralelValue) speed = -80;
+  else if(analogReadCalibrated(CHAINBAR_POTEN) < parralelValue) speed = 80;
+  else speed = holdPower;
+
+  chainbarSet(speed);
+
+  //wait until chainbar hits the right value, then hold power
+  while(analogReadCalibrated(CHAINBAR_POTEN) != parralelValue);
+  chainbarSet(holdPower);
+
+  //move lift up
+  liftSet(127, 127);
+
+  //while lift is moving to the top, check poten values and adjust speed accordingly
+  int left = analogReadCalibrated(LEFT_POTEN);
+  int right = analogReadCalibrated(RIGHT_POTEN);
+  int rightSpeed, leftSpeed;
+
+  //while lift is moving up
+  while(analogReadCalibrated(LEFT_POTEN) < top && analogReadCalibrated(RIGHT_POTEN) < top) {
+    left = analogReadCalibrated(LEFT_POTEN);
+    right = analogReadCalibrated(RIGHT_POTEN);
+
+    //adjust speed based on potentiometer values
+    if(left > right) {
+      rightSpeed = 127;
+      leftSpeed = 80;
+    }
+    else if(left < right) {
+      rightSpeed = 80;
+      leftSpeed = 127;
+    }
+    else {
+      rightSpeed = 127;
+      leftSpeed = 127;
+    }
+
+    liftSet(leftSpeed, rightSpeed);
+  }
+
+  //may be -127, change it if the chainbar moves the wrong way at this step
+  chainbarSet(127);
+
+  //wait until the chainbar is above the stack, then stop
+  while(analogReadCalibrated(CHAINBAR_POTEN) != aboveStackValue);
+  chainbarSet(0);
+
+  //move lift down a tiny bit so that the chainbar is on top of the stack
+  liftSet(-20, -20);
+  delay(100);
+  liftSet(0,0);
+
 }

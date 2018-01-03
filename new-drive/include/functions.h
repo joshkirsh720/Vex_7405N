@@ -14,6 +14,8 @@
 #define LEFT_POTEN 2
 #define LEFT_LIFT_MOTOR 3
 #define RIGHT_LIFT_MOTOR 6
+#define CHAINBAR 9
+#define CHAINBAR_POTEN 4
 
 
 typedef enum {
@@ -55,4 +57,9 @@ void liftSet(int left, int right);
 //sets mobile goal speed
 void mobileSet(int speed);
 
+//sets chainbar to move
+void chainbarSet(int speed);
+
+//rests intake on top of stack
+void restIntake(int stacked);
 #endif
