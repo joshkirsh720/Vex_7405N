@@ -31,16 +31,21 @@ void autonomous() {
   imeReset(0);
   imeReset(1);
 
+  chassisSet(0,0);
+  liftSet(0,0);
+  mobileLiftSet(0);
+
   bool useTime = true;
 
   //move mobile goal down
   mobileLiftSet(127);
-  delay(1000);
+  chassisSet(127,127);
+
+  delay(600);
+
   mobileLiftSet(0);
 
-  //move forwards
-  chassisSet(127, 127);
-  useTime ? delay(1900) : imeWait(1700);
+  useTime ? delay(1300) : imeWait(_);
   chassisSet(0, 0);
 
   //move mobile goal up
@@ -50,12 +55,12 @@ void autonomous() {
 
   //move backwards
   chassisSet(-127, -127);
-  useTime ? delay(1500) : imeWait(-850);
+  useTime ? delay(1500) : imeWait(_);
   chassisSet(0, 0);
 
   //turn to the right
   chassisSet(127, -127);
-  useTime ? delay(800) : gyroTurn(-135);
+  useTime ? delay(800) : gyroTurn(_);
   chassisSet(-127, 127);
   chassisSet(0, 0);
 
@@ -63,12 +68,27 @@ void autonomous() {
   //FOLLOWING CODE HAS DUMMY VALUES THAT SHOULD BE CHANGED
   //move forward
   chassisSet(127, 127);
-  useTime ? delay(500) : imeWait(_);
+  useTime ? delay(600) : imeWait(_);
   chassisSet(0, 0);
 
   //turn to face goal
   chassisSet(127, -127);
-  useTime ? delay(400) : gyroTurn(_);
+  useTime ? delay(750) : gyroTurn(_);
+  chassisSet(0, 0);
+
+  //move forward into 3rd highest stack bonus
+  chassisSet(127, 127);
+  useTime ? delay(1250) : imeWait(_);
+  chassisSet(0, 0);
+
+  //mobile goal down
+  mobileLiftSet(127);
+  delay(600);
+  mobileLiftSet(0);
+
+  //back up to score cones in the 3rd highest stack bonus
+  chassisSet(-127, -127);
+  useTime ? delay(1000) : imeWait(_);
   chassisSet(0, 0);
 
 }
