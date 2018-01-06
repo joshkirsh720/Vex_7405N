@@ -17,6 +17,7 @@
 #define RIGHT_LIFT_MOTOR 6
 #define CHAINBAR 9
 #define CHAINBAR_POTEN 4
+#define INTAKE 4
 
 
 void chassisSet(int left, int right);
@@ -29,6 +30,8 @@ void imeWait(int val);
 
 //corrects forward motion using the gyro
 void gyroCorrect();
+
+void chainbarHoldSet(int position);
 
 //turn with the gyro
 void gyroTurn(int val);

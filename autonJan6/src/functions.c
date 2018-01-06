@@ -18,6 +18,23 @@ void mobileLiftSet(int speed) {
   motorSet(MOBILE_LIFT, speed);
 }
 
+void chainbarHoldSet(int position){
+  int chainbarHold = 0;
+
+
+	if (analogRead(4) < 900){
+		chainbarHold = -20;
+
+	}else if ((analogRead(4) > 1000) && (analogRead(4) < 1600)){
+		chainbarHold = -10;
+	}else if (analogRead(4) > 1300){
+		chainbarHold = 15;
+	}else {
+		chainbarHold = 0;
+	}
+
+  motorSet(CHAINBAR, chainbarHold);
+}
 
 //INCOMPLETE
 //NO GYRO CORRECT AND NEEDS TO BE ABLE TO GO BACKWARDS

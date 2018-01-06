@@ -11,7 +11,6 @@
  */
 
 #include "main.h"
-#define _ 0
 /*
  * Runs the user autonomous code. This function will be started in its own task with the default
  * priority and stack size whenever the robot is enabled via the Field Management System or the
@@ -27,68 +26,112 @@
  * so, the robot will await a switch to another mode or disable/enable cycle.
  */
 void autonomous() {
+
   gyroReset(gyro);
   imeReset(0);
   imeReset(1);
 
+  bool blueTeam = true, useTime = false;
+  int speed = 90, degree = 5;
+
+  //stop all motors
   chassisSet(0,0);
   liftSet(0,0);
   mobileLiftSet(0);
 
-  bool useTime = true;
-
-  //move mobile goal down
+  //move mobile goal lift down
   mobileLiftSet(127);
+  //start moving
   chassisSet(127,127);
 
-  delay(600);
-
+  delay(700);
+  //stop mobile goal lift movement but keep driving forward
   mobileLiftSet(0);
 
-  useTime ? delay(1300) : imeWait(_);
+  delay(300);
   chassisSet(0, 0);
 
-  //move mobile goal up
+  // blueTeam ? chassisSet(127, -127) : chassisSet(-127, 127);
+  // delay(300);
+  // blueTeam ? chassisSet(-127, 127) : chassisSet(127, -127);
+  // delay(300);
+  // blueTeam ? chassisSet(127, -127) : chassisSet(-127, 127);
+  // chassisSet(0,0);
+
+  chassisSet(127, 127);
+  //stop forward movement after time
+  delay(1000);
+  chassisSet(0, 0);
+
+  //move mobile goal lift up
   mobileLiftSet(-127);
   delay(1000);
   mobileLiftSet(0);
 
+  //1360 move value up
+  //down is negative for the motor
+  /*motorSet(CHAINBAR, -127);
+  while(analogRead(CHAINBAR_POTEN) < 1360);
+  chainbarHoldSet(1360);
+  motorSet(INTAKE, -127);
+  delay(500);
+  motorSet(INTAKE, 0);
+  motorSet(CHAINBAR, 127);
+  delay(600);
+  motorSet(CHAINBAR, 0);*/
+
+
+  /*//right is negative left is positive
+  if(gyroGet(gyro) < -5) {
+    chassisSet(-speed, speed);
+    while(gyroGet(gyro) < -5);
+    chassisSet(speed, -speed);
+    chassisSet(0, 0);
+  }
+  else if(gyroGet(gyro) > 5) {
+    chassisSet(speed, -speed);
+    while(gyroGet(gyro) > 5);
+    chassisSet(-speed, speed);
+    chassisSet(0, 0);
+  }*/
+
+
   //move backwards
   chassisSet(-127, -127);
-  useTime ? delay(1500) : imeWait(_);
+  delay(1500);
   chassisSet(0, 0);
 
-  //turn to the right
-  chassisSet(127, -127);
-  useTime ? delay(800) : gyroTurn(_);
-  chassisSet(-127, 127);
+  //turn right if blue team left if red team
+  blueTeam ? chassisSet(127, -127) : chassisSet(-127, 127);
+  delay(800);
+  //quickly reverse motors to stop overrotation
+  blueTeam ? chassisSet(-127, 127) : chassisSet(127, -127);
   chassisSet(0, 0);
 
 
-  //FOLLOWING CODE HAS DUMMY VALUES THAT SHOULD BE CHANGED
   //move forward
   chassisSet(127, 127);
-  useTime ? delay(600) : imeWait(_);
+  delay(600);
   chassisSet(0, 0);
 
   //turn to face goal
-  chassisSet(127, -127);
-  useTime ? delay(750) : gyroTurn(_);
+  blueTeam ? chassisSet(127, -127) : chassisSet(-127, 127);
+  delay(550);
   chassisSet(0, 0);
 
-  //move forward into 3rd highest stack bonus
+  //move forward into 20 pt zone
   chassisSet(127, 127);
-  useTime ? delay(1250) : imeWait(_);
+  delay(1250);
   chassisSet(0, 0);
 
-  //mobile goal down
+  //mobile goal lift down
   mobileLiftSet(127);
   delay(600);
   mobileLiftSet(0);
 
-  //back up to score cones in the 3rd highest stack bonus
+  //back up
   chassisSet(-127, -127);
-  useTime ? delay(1000) : imeWait(_);
+  delay(1000);
   chassisSet(0, 0);
 
 }
