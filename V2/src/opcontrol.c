@@ -50,11 +50,13 @@ void operatorControl() {
 		//START OF HOLD POWER FOR THE CHAINBAR
 
 
-		if (analogRead(4) < 1200){
-			chainbarHold = -15;
+		if (analogRead(4) < 900){
+			chainbarHold = -20;
 
-		}else if (analogRead(4) > 1300){
-			chainbarHold = 20;
+		}else if ((analogRead(4) > 1000) && (analogRead(4) < 1150)){
+			chainbarHold = -5;
+		}else if (analogRead(4) > 1150){
+			chainbarHold = 15;
 		}else {
 			chainbarHold = 0;
 		}
@@ -207,82 +209,80 @@ void operatorControl() {
 
 void autoStack() {
 
-		int chainbarHeight = 1370;
-
-
-			if (analogRead(4) < 850){
-				chainbarHold = -10;
-
-			}else if (analogRead(4) > 1400){
-				chainbarHold = 10;
-			}else {
-				chainbarHold = 5;
-			}
-
-
+		int chainbarHeight = 1300;
 		int liftHeight = 0;
 
 
 		if (autoStackCounter == 1) {
-				liftHeight = 100;
-				chainbarHeight = 1500;
+				liftHeight = 80;
+				chainbarHeight = 1360;
 		} else if (autoStackCounter == 2) {
-				liftHeight = 200;
-				chainbarHeight = 1500;
+				liftHeight = 140;
+				chainbarHeight = 1380;
 		} else if (autoStackCounter == 3) {
-				liftHeight = 300;
-				chainbarHeight = 1500;
+				liftHeight = 310;
+				chainbarHeight = 1360;
 		} else if (autoStackCounter == 4) {
-				liftHeight = 400;
-				chainbarHeight = 1500;
-
+				liftHeight = 410;
+				chainbarHeight = 1360;
 		} else if (autoStackCounter == 5) {
-				liftHeight = 750;
-		} else if (autoStackCounter == 6) {
-				liftHeight = 950;
+				liftHeight = 510;
+				chainbarHeight = 1380;
 		}
 
 
 
-		motorSet(INTAKE_MOTOR, 60);
-		delay(500);
-		motorSet(INTAKE_MOTOR, 30);
-		printf("%s \n", "intake");
+		motorSet(INTAKE_MOTOR, 100); //ORIGINAL INTAKE BLOCK WHICH TAKES THE CODE IN
+		delay(700);
 
-		chainbarMove(2300);
 
-		motorSet(CHAINBAR_MOTOR,chainbarHold);
+		motorSet(INTAKE_MOTOR, 30); //SETS HOLD POWER FOR THE INTAKE
 
-		if(autoStackCounter > 0){
-			liftMove(100);
-			motorSet(LEFT_LIFT_MOTOR, -20); //hold power while the button is not being pressed
-			motorSet(RIGHT_LIFT_MOTOR, 20);
 
-		}
-
-		chainbarMove(chainbarHeight);
-		motorSet(CHAINBAR_MOTOR,chainbarHold);
+		chainbarMove(chainbarHeight + 900);// BRINGS THE CHAINBAR TO THE pre height
+		chainbarHoldSet(chainbarHeight + 900);
 
 		if(autoStackCounter > 0){
 			liftMove(liftHeight);
-			motorSet(LEFT_LIFT_MOTOR, -20); //hold power while the button is not being pressed
-			motorSet(RIGHT_LIFT_MOTOR, 20);
-			liftMove(liftHeight -20);
-			motorSet(LEFT_LIFT_MOTOR, -20); //hold power while the button is not being pressede4
-			motorSet(RIGHT_LIFT_MOTOR, 20);
-
+			motorSet(LEFT_LIFT_MOTOR, -25);
+			motorSet(RIGHT_LIFT_MOTOR, 25);
 
 		}
 
-		delay(100);
-		motorSet(INTAKE_MOTOR, -60);
+		chainbarMove(chainbarHeight );// BRINGS THE CHAINBAR TO THE pre height
+		chainbarHoldSet(chainbarHeight );
 
-		delay(400);
+		delay(150);
+
+
+
+		motorSet(INTAKE_MOTOR, -60);
+		delay(500);
 		motorSet(INTAKE_MOTOR, 0);
 
+		delay(200);
 
 
-		chainbarMove(1700);
+		chainbarMove(2600);
+		chainbarHoldSet(2600);
+
+		if(autoStackCounter > 0 ){
+			liftMove(10);
+			motorSet(LEFT_LIFT_MOTOR,  0); //hold power while the button is not being pressed
+			motorSet(RIGHT_LIFT_MOTOR, 0);
+		}
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

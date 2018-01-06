@@ -102,6 +102,8 @@ void initialize();
 
  void autoStack();
 
+ void chainbarHoldSet(int position);
+
 
 
  Encoder encoder;

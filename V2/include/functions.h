@@ -67,4 +67,8 @@ void liftSet(int left, int right);
 //sets mobile goal speed
 void mobileSet(int speed);
 
+void chainbarHoldSet(int position);
+
+
+
 #endif
