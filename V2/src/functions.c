@@ -17,7 +17,7 @@ void liftSet(int left, int right) {
   motorSet(RIGHT_LIFT_MOTOR, right);
 }
 
-void mobileSet(int speed) {
+void mobileLiftSet(int speed) {
   motorSet(MOBILE_LIFT_MOTOR, speed);
 }
 
@@ -36,26 +36,23 @@ void liftMove(int position) {
     		int leftLiftPot = abs(analogReadCalibrated(2));
 
 
-    if(analogReadCalibrated(2) < (position - 50)){
-      while(analogReadCalibrated(2) < (position - 50)){
-        if ((rightLiftPot < (leftLiftPot - 150)) ) {
+    if(analogReadCalibrated(2) < (position )){
+      while(analogReadCalibrated(2) < (position)){
+        if ((rightLiftPot < (leftLiftPot - 150))  && (rightLiftPot > 350)) {
     				upSpeedLeft = -70;
-    				upSpeedRight = 125;
-    		} else if ((leftLiftPot < (rightLiftPot + 300))  ){
-    				upSpeedRight = 40;
-    				upSpeedLeft = -125;
+    				upSpeedRight = 90;
+    		} else if ((leftLiftPot < (rightLiftPot + 200) && (rightLiftPot > 350))  ){
+    				upSpeedRight = 70;
+    				upSpeedLeft = -90;
     		} else {
-    				upSpeedRight = 100;
-    				upSpeedLeft = -100;
+    				upSpeedRight = 90;
+    				upSpeedLeft = -90;
     		}
-
-        motorSet(LEFT_LIFT_MOTOR, upSpeedLeft);
-        motorSet(RIGHT_LIFT_MOTOR, upSpeedRight);
-
-
-
-
+        motorSet(LEFT_LIFT_MOTOR, -90);
+        motorSet(RIGHT_LIFT_MOTOR, 90);
       }
+      motorSet(LEFT_LIFT_MOTOR, -20); //hold power while the button is not being pressed
+      motorSet(RIGHT_LIFT_MOTOR, 20);
 
 
     }else if(analogReadCalibrated(2) > position){
@@ -78,7 +75,12 @@ void liftMove(int position) {
 
       }
 
+      motorSet(LEFT_LIFT_MOTOR, -20); //hold power while the button is not being pressed
+      motorSet(RIGHT_LIFT_MOTOR, 20);
+
     }
+
+
 
     motorSet(LEFT_LIFT_MOTOR, -20); //hold power while the button is not being pressed
     motorSet(RIGHT_LIFT_MOTOR, 20);
@@ -96,8 +98,8 @@ void chainbarMove(int position) { //takes in the desired position of the chainba
       while(analogRead(4) > position) {
         motorSet(CHAINBAR_MOTOR, chainbarUpSpeed);
       }
-    } else if (analogRead(4) < (position - 200)){
-        while(analogRead(4) < (position - 200)) {
+    } else if (analogRead(4) < (position)){
+        while(analogRead(4) < (position )) {
           motorSet(CHAINBAR_MOTOR, chainbarDownSpeed);
         }
       }
@@ -123,4 +125,27 @@ void chainbarHoldSet(int position){
 	}
 
   motorSet(CHAINBAR_MOTOR, chainbarHold);
+}
+
+
+
+//INCOMPLETE
+//NO GYRO CORRECT AND NEEDS TO BE ABLE TO GO BACKWARDS
+void imeWait(int val) {
+  int leftIme, rightIme;
+
+  while(abs(leftIme) < val || abs(rightIme) < val) {
+    imeGet(0, &rightIme);
+    imeGet(1, &leftIme);
+
+    gyroCorrect();
+  }
+}
+
+void gyroCorrect() {
+    //RIGHT IS NEGATIVE LEFT IS POSITIVE
+}
+
+void gyroTurn(int val) {
+
 }

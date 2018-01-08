@@ -65,9 +65,16 @@ void accurateTurn(int degrees, direction startingDirec);
 void liftSet(int left, int right);
 
 //sets mobile goal speed
-void mobileSet(int speed);
+void mobileLiftSet(int speed);
 
 void chainbarHoldSet(int position);
+
+void imeWait(int val);
+
+void gyroCorrect();
+
+void gyroTurn(int val);
+
 
 
 

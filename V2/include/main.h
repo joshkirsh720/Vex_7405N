@@ -104,6 +104,8 @@ void initialize();
 
  void chainbarHoldSet(int position);
 
+ void matchStack();
+
 
 
  Encoder encoder;
