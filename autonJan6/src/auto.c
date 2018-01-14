@@ -25,15 +25,26 @@
  * The autonomous task may exit, unlike operatorControl() which should never exit. If it does
  * so, the robot will await a switch to another mode or disable/enable cycle.
  */
+void auton1(bool blueTeam);
+
 void autonomous() {
 
   gyroReset(gyro);
   imeReset(0);
   imeReset(1);
 
-  bool blueTeam = true, useTime = false;
-  int speed = 90, degree = 5;
+  auton = 1;
 
+  if(auton == 1) {
+    auton1(true);
+  }
+  else if(auton == 2) {
+    auton1(false);
+  }
+  //...continue with more autonomous functions when more are written
+}
+
+void auton1(bool blueTeam) {
   //stop all motors
   chassisSet(0,0);
   liftSet(0,0);
@@ -48,19 +59,12 @@ void autonomous() {
   //stop mobile goal lift movement but keep driving forward
   mobileLiftSet(0);
 
-  delay(300);
+  delay(250);
   chassisSet(0, 0);
-
-  // blueTeam ? chassisSet(127, -127) : chassisSet(-127, 127);
-  // delay(300);
-  // blueTeam ? chassisSet(-127, 127) : chassisSet(127, -127);
-  // delay(300);
-  // blueTeam ? chassisSet(127, -127) : chassisSet(-127, 127);
-  // chassisSet(0,0);
 
   chassisSet(127, 127);
   //stop forward movement after time
-  delay(1000);
+  delay(700);
   chassisSet(0, 0);
 
   //move mobile goal lift up
@@ -68,37 +72,10 @@ void autonomous() {
   delay(1000);
   mobileLiftSet(0);
 
-  //1360 move value up
-  //down is negative for the motor
-  /*motorSet(CHAINBAR, -127);
-  while(analogRead(CHAINBAR_POTEN) < 1360);
-  chainbarHoldSet(1360);
-  motorSet(INTAKE, -127);
-  delay(500);
-  motorSet(INTAKE, 0);
-  motorSet(CHAINBAR, 127);
-  delay(600);
-  motorSet(CHAINBAR, 0);*/
-
-
-  /*//right is negative left is positive
-  if(gyroGet(gyro) < -5) {
-    chassisSet(-speed, speed);
-    while(gyroGet(gyro) < -5);
-    chassisSet(speed, -speed);
-    chassisSet(0, 0);
-  }
-  else if(gyroGet(gyro) > 5) {
-    chassisSet(speed, -speed);
-    while(gyroGet(gyro) > 5);
-    chassisSet(-speed, speed);
-    chassisSet(0, 0);
-  }*/
-
 
   //move backwards
   chassisSet(-127, -127);
-  delay(1500);
+  delay(1750);
   chassisSet(0, 0);
 
   //turn right if blue team left if red team
@@ -111,27 +88,31 @@ void autonomous() {
 
   //move forward
   chassisSet(127, 127);
-  delay(600);
+  delay(550);
   chassisSet(0, 0);
 
   //turn to face goal
   blueTeam ? chassisSet(127, -127) : chassisSet(-127, 127);
-  delay(550);
+  delay(650);
   chassisSet(0, 0);
+
+  //lift needs to move down for 300 ms
+  //drive needs to move forward for 1250 ms
 
   //move forward into 20 pt zone
   chassisSet(127, 127);
-  delay(1250);
-  chassisSet(0, 0);
 
-  //mobile goal lift down
+  delay(200);
   mobileLiftSet(127);
-  delay(600);
+
+  delay(250);
   mobileLiftSet(0);
+
+  delay(700);
+  chassisSet(0, 0);
 
   //back up
   chassisSet(-127, -127);
   delay(1000);
   chassisSet(0, 0);
-
 }

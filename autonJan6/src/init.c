@@ -37,12 +37,6 @@ void initializeIO() {
  * can be implemented in this task if desired.
  */
 void initialize() {
-  lcdInit(uart1);
-  lcdClear(uart1);
-
-  lcdPrint(uart1, 1, "X is %d", x);
-  // Print plain text to LCD (much faster than lcdPrint)
-  lcdSetText(uart1, 2, "Hello World");
 
   gyro = gyroInit(GYRO_PORT, 196);
   imeInitializeAll();

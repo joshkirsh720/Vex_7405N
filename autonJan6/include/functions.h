@@ -19,6 +19,7 @@
 #define CHAINBAR_POTEN 4
 #define INTAKE 4
 
+int auton;
 
 void chassisSet(int left, int right);
 void liftSet(int left, int right);
