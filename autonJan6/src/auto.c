@@ -48,18 +48,23 @@ void autonomous() {
 }
 
 void initialConeStack() {
+  intakeSet(50);
+  delay(50);
   chainbarSet(-127);
   delay(700);
-
+//Now past gates
   chainbarSet(127);
-  delay(700);
-
-  intakeSet(-127);
+  delay(600);
+//chainbar is now at top
+  intakeSet(-127); //realeasing
   delay(300);
   intakeSet(0);
 }
 
 void auton1(bool blueTeam) {
+
+
+  liftSet(-40, -40);
 
   printf("Power Level: %d\n", powerLevelMain());
 
@@ -92,7 +97,30 @@ void auton1(bool blueTeam) {
 
 
   //drop preload cone on mobile goal
+
   initialConeStack();
+
+  //2nd cone
+  intakeSet(127);
+  chainbarSet(-127);
+  delay(1300);
+
+  //cone is picked up
+  chainbarSet(127);
+  delay(500); //this line
+  liftSet(80,80);
+  delay(150);
+  /*chainbarSet(127);
+  delay(200);*/
+  liftSet(0,0);
+  intakeSet(60);
+  delay(500);
+  liftSet(-80,-80);
+  delay(300);
+  liftSet(0,0);
+  intakeSet(-127);
+  delay(100);
+  chainbarSet(20);
 
   //move backwards
   chassisSet(-127, -127);
@@ -101,7 +129,7 @@ void auton1(bool blueTeam) {
 
   //turn right if blue team left if red team
   blueTeam ? chassisSet(127, -127) : chassisSet(-127, 127);
-  delay(1000);
+  delay(850);
   //quickly reverse motors to stop overrotation
   blueTeam ? chassisSet(-127, 127) : chassisSet(127, -127);
   chassisSet(0, 0);
@@ -114,7 +142,7 @@ void auton1(bool blueTeam) {
 
   //turn to face goal
   blueTeam ? chassisSet(127, -127) : chassisSet(-127, 127);
-  delay(850);
+  delay(825);
   chassisSet(0, 0);
 
   //lift needs to move down for 300 ms
@@ -126,4 +154,5 @@ void auton1(bool blueTeam) {
   chassisSet(-127, -127);
   delay(600);
   chassisSet(0, 0);
+
 }
