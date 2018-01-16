@@ -25,7 +25,7 @@
  * The autonomous task may exit, unlike operatorControl() which should never exit. If it does
  * so, the robot will await a switch to another mode or disable/enable cycle.
  */
-void auton1(bool blueTeam);
+void auton1(bool blueTeam), initialConeStack();
 
 void autonomous() {
 
@@ -41,10 +41,28 @@ void autonomous() {
   else if(auton == 2) {
     auton1(false);
   }
+  else {
+    initialConeStack();
+  }
   //...continue with more autonomous functions when more are written
 }
 
+void initialConeStack() {
+  chainbarSet(-127);
+  delay(700);
+
+  chainbarSet(127);
+  delay(700);
+
+  intakeSet(-127);
+  delay(300);
+  intakeSet(0);
+}
+
 void auton1(bool blueTeam) {
+
+  printf("Power Level: %d\n", powerLevelMain());
+
   //stop all motors
   chassisSet(0,0);
   liftSet(0,0);
@@ -70,17 +88,20 @@ void auton1(bool blueTeam) {
   //move mobile goal lift up
   mobileLiftSet(-127);
   delay(1000);
-  mobileLiftSet(0);
+  mobileLiftSet(-15);
 
+
+  //drop preload cone on mobile goal
+  initialConeStack();
 
   //move backwards
   chassisSet(-127, -127);
-  delay(1750);
+  delay(2000);
   chassisSet(0, 0);
 
   //turn right if blue team left if red team
   blueTeam ? chassisSet(127, -127) : chassisSet(-127, 127);
-  delay(800);
+  delay(1000);
   //quickly reverse motors to stop overrotation
   blueTeam ? chassisSet(-127, 127) : chassisSet(127, -127);
   chassisSet(0, 0);
@@ -93,26 +114,16 @@ void auton1(bool blueTeam) {
 
   //turn to face goal
   blueTeam ? chassisSet(127, -127) : chassisSet(-127, 127);
-  delay(650);
+  delay(850);
   chassisSet(0, 0);
 
   //lift needs to move down for 300 ms
   //drive needs to move forward for 1250 ms
 
-  //move forward into 20 pt zone
-  chassisSet(127, 127);
-
-  delay(200);
-  mobileLiftSet(127);
-
-  delay(250);
-  mobileLiftSet(0);
-
-  delay(700);
-  chassisSet(0, 0);
+  dropMobileGoal();
 
   //back up
   chassisSet(-127, -127);
-  delay(1000);
+  delay(600);
   chassisSet(0, 0);
 }

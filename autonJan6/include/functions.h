@@ -24,6 +24,8 @@ int auton;
 void chassisSet(int left, int right);
 void liftSet(int left, int right);
 void mobileLiftSet(int val);
+void chainbarSet(int speed);
+void intakeSet(int speed);
 
 //moves forwards until the IMEs hit a certain value
 //PRECONDITION: val >= 0
@@ -37,4 +39,5 @@ void chainbarHoldSet(int position);
 //turn with the gyro
 void gyroTurn(int val);
 
+void dropMobileGoal();
 #endif

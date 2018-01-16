@@ -27,6 +27,10 @@
  * so, the robot will await a switch to another mode or disable/enable cycle.
  */
 void autonomous() {
+
+  //downward lift hold power
+  liftSet(-30, -30);
+
   //START ON BLUE SIDE LEFT MOBILE GOAL
 
   //stop all motors
@@ -40,7 +44,7 @@ void autonomous() {
   delay(700);
   mobileLiftSet(0);
   //stop mobile goal but keep moving, then stop chassis
-  delay(500);
+  delay(550);
   chassisSet(0, 0);
 
 
