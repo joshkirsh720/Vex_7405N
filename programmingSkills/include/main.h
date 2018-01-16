@@ -94,6 +94,7 @@ void initialize();
  */
 void operatorControl();
 
+
 // End C++ export structure
 #ifdef __cplusplus
 }

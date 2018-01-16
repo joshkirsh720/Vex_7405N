@@ -61,8 +61,9 @@ void gyroCorrect() {
     //RIGHT IS NEGATIVE LEFT IS POSITIVE
 }
 
-void gyroTurn(int val) {
-
+void gyroWait(int val) {
+  while(abs(gyroGet(gyro)) < abs(val));
+  
 }
 
 void dropMobileGoal() {
@@ -72,10 +73,10 @@ void dropMobileGoal() {
   //and mobile goal down
   chassisSet(127, 127);
 
-  delay(975);
+  delay(1150);
   mobileLiftSet(127);
 
-  delay(500);
+  delay(550);
   mobileLiftSet(0);
 
   //back up a bit

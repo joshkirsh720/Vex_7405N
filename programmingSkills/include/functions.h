@@ -20,6 +20,7 @@
 #define INTAKE 4
 
 int auton;
+Gyro gyro;
 
 void chassisSet(int left, int right);
 void liftSet(int left, int right);
@@ -36,7 +37,7 @@ void gyroCorrect();
 void chainbarHoldSet(int position);
 
 //turn with the gyro
-void gyroTurn(int val);
+void gyroWait(int val);
 
 //drop mobile goal in 20 pt zone correctly
 void dropMobileGoal();

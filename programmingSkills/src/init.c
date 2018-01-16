@@ -38,4 +38,5 @@ void initializeIO() {
  */
 void initialize() {
   analogCalibrate(CHAINBAR_POTEN);
+  gyro = gyroInit(GYRO_PORT, 196);
 }

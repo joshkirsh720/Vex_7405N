@@ -61,7 +61,7 @@ void autonomous() {
 
   //move forward
   chassisSet(127, 127);
-  delay(450);
+  delay(375);
   chassisSet(0, 0);
 
   //turn to face 20 pt zone
@@ -96,7 +96,7 @@ void autonomous() {
 
   //turn right
   chassisSet(127, -127);
-  delay(600);
+  gyro == NULL ? delay(600) : gyroWait(0);
   chassisSet(-127, 127);
   chassisSet(0, 0);
 
