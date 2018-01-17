@@ -103,11 +103,11 @@ void auton1(bool blueTeam) {
   //2nd cone
   intakeSet(127);
   chainbarSet(-127);
-  delay(1300);
+  delay(1150);
 
   //cone is picked up
   chainbarSet(127);
-  delay(500); //this line
+  delay(500);
   liftSet(80,80);
   delay(150);
   /*chainbarSet(127);
@@ -121,7 +121,7 @@ void auton1(bool blueTeam) {
   intakeSet(-127);
   delay(100);
   chainbarSet(20);
-
+  liftSet(-40, -40);
   //move backwards
   chassisSet(-127, -127);
   delay(2000);
@@ -129,7 +129,7 @@ void auton1(bool blueTeam) {
 
   //turn right if blue team left if red team
   blueTeam ? chassisSet(127, -127) : chassisSet(-127, 127);
-  delay(850);
+  blueTeam ? delay(850) : delay(850); //2nd value is a dummy value
   //quickly reverse motors to stop overrotation
   blueTeam ? chassisSet(-127, 127) : chassisSet(127, -127);
   chassisSet(0, 0);
@@ -142,7 +142,7 @@ void auton1(bool blueTeam) {
 
   //turn to face goal
   blueTeam ? chassisSet(127, -127) : chassisSet(-127, 127);
-  delay(825);
+  blueTeam ? delay(825): delay(825); //2nd value is a dummy value
   chassisSet(0, 0);
 
   //lift needs to move down for 300 ms
@@ -152,7 +152,7 @@ void auton1(bool blueTeam) {
 
   //back up
   chassisSet(-127, -127);
-  delay(600);
+  delay(500);
   chassisSet(0, 0);
 
 }
