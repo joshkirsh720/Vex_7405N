@@ -59,7 +59,7 @@ void autonomous() {
 
   //turn right
   chassisSet(127, -127);
-  delay(600);
+  delay(550);
   chassisSet(-127, 127);
   chassisSet(0, 0);
 
@@ -70,7 +70,7 @@ void autonomous() {
 
   //turn to face 20 pt zone
   chassisSet(127, -127);
-  delay(650);
+  delay(450);
   chassisSet(0, 0);
 
   //move back an inch
