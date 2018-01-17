@@ -33,7 +33,7 @@ void autonomous() {
   imeReset(0);
   imeReset(1);
 
-  auton = 1;
+  auton = 2;
 
   if(auton == 1) {
     auton1(true);
@@ -101,6 +101,10 @@ void auton1(bool blueTeam) {
   initialConeStack();
 
   //2nd cone
+  chassisSet(127, 127);
+  delay(100);
+  chassisSet(0, 0);
+
   intakeSet(127);
   chainbarSet(-127);
   delay(1150);
@@ -110,10 +114,10 @@ void auton1(bool blueTeam) {
   delay(500);
   liftSet(80,80);
   delay(150);
-  /*chainbarSet(127);
-  delay(200);*/
+  //chainbarSet(127);
+  //delay(200);
   liftSet(0,0);
-  intakeSet(60);
+  //intakeSet(60);
   delay(500);
   liftSet(-80,-80);
   delay(300);
@@ -124,7 +128,7 @@ void auton1(bool blueTeam) {
   liftSet(-40, -40);
   //move backwards
   chassisSet(-127, -127);
-  delay(2000);
+  delay(1800);
   chassisSet(0, 0);
 
   //turn right if blue team left if red team
@@ -142,7 +146,7 @@ void auton1(bool blueTeam) {
 
   //turn to face goal
   blueTeam ? chassisSet(127, -127) : chassisSet(-127, 127);
-  blueTeam ? delay(825): delay(825); //2nd value is a dummy value
+  blueTeam ? delay(600): delay(600); //2nd value is a dummy value
   chassisSet(0, 0);
 
   //lift needs to move down for 300 ms
