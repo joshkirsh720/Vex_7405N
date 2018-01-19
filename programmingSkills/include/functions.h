@@ -41,4 +41,6 @@ void gyroWait(int val);
 
 //drop mobile goal in 20 pt zone correctly
 void dropMobileGoal();
+
+void initialConeStack();
 #endif

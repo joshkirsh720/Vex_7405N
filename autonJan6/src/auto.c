@@ -29,6 +29,8 @@ void auton1(bool blueTeam), initialConeStack();
 
 void autonomous() {
 
+  printf("Power Level: %d\n", powerLevelMain());
+
   gyroReset(gyro);
   imeReset(0);
   imeReset(1);
@@ -65,8 +67,6 @@ void auton1(bool blueTeam) {
 
 
   liftSet(-40, -40);
-
-  printf("Power Level: %d\n", powerLevelMain());
 
   //stop all motors
   chassisSet(0,0);
@@ -126,6 +126,8 @@ void auton1(bool blueTeam) {
   delay(100);
   chainbarSet(20);
   liftSet(-40, -40);
+
+
   //move backwards
   chassisSet(-127, -127);
   delay(1800);

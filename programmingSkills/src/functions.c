@@ -73,14 +73,32 @@ void dropMobileGoal() {
   //and mobile goal down
   chassisSet(127, 127);
 
-  delay(1000);
+  delay(900);
   mobileLiftSet(127);
 
   delay(600);
+  mobileLiftSet(0);
+
+  mobileLiftSet(-127);
+  delay(650);
   mobileLiftSet(0);
 
   //back up a bit
   chassisSet(-127, -127);
   delay(300);
   chassisSet(0, 0);
+}
+
+void initialConeStack() {
+  intakeSet(50);
+  delay(50);
+  chainbarSet(-127);
+  delay(700);
+//Now past gates
+  chainbarSet(127);
+  delay(600);
+//chainbar is now at top
+  intakeSet(-127); //realeasing
+  delay(300);
+  intakeSet(0);
 }

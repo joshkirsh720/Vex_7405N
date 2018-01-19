@@ -28,6 +28,8 @@
  */
 void autonomous() {
 
+  printf("Power Level Main: %d\n", powerLevelMain());
+
   //downward lift hold power
   liftSet(-30, -30);
 
@@ -41,10 +43,10 @@ void autonomous() {
   //move forward to get red mobile goal
   chassisSet(127, 127);
   mobileLiftSet(127);
-  delay(700);
+  delay(600);
   mobileLiftSet(0);
   //stop mobile goal but keep moving, then stop chassis
-  delay(550);
+  delay(650);
   chassisSet(0, 0);
 
 
@@ -53,24 +55,26 @@ void autonomous() {
   delay(700);
   mobileLiftSet(0);
 
+  initialConeStack();
+
   //back up
   chassisSet(-127, -127);
-  delay(1000);
+  delay(1200);
 
   //turn right
   chassisSet(127, -127);
-  delay(550);
+  delay(500);
   chassisSet(-127, 127);
   chassisSet(0, 0);
 
   //move forward
   chassisSet(127, 127);
-  delay(375);
+  delay(300);
   chassisSet(0, 0);
 
   //turn to face 20 pt zone
   chassisSet(127, -127);
-  delay(450);
+  delay(750);
   chassisSet(0, 0);
 
   //move back an inch
@@ -82,7 +86,10 @@ void autonomous() {
 
   //back up
   chassisSet(-127, -127);
-  delay(700);
+  mobileLiftSet(-127);
+  delay(600);
+  mobileLiftSet(0);
+  delay(100);
   chassisSet(0, 0);
 
 
@@ -92,6 +99,11 @@ void autonomous() {
   delay(650);
   chassisSet(-127, 127);
   chassisSet(0, 0);
+
+  //move mobile lift down
+  mobileLiftSet(127);
+  delay(650);
+  mobileLiftSet(0);
 
   //move forward
   chassisSet(127, 127);
