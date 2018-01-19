@@ -1,6 +1,8 @@
 
 #include "main.h"
 
+
+
 //drive definitions
 #define LEFT_MOTOR_PORT_1 5
 #define LEFT_MOTOR_PORT_2 7
@@ -29,7 +31,7 @@
 
 int autoStackBreaker = 0;
 int c;
-
+int b;
 int autoStackCounter = 0;
 
 int matchStackCounter = 0;
@@ -47,7 +49,8 @@ void operatorControl() {
 
 		//START PRE DETERMINED HOLD POWER FOR DIFFERENT PARTS OF THE ROBOT
 
-
+printf("%d \n", encoderGet(rightLiftEncoder));
+printf("%d \n", encoderGet(leftLiftEncoder));
 		//START OF HOLD POWER FOR THE CHAINBAR
 		//START OF HOLD POWER FOR THE CHAINBAR
 
@@ -102,45 +105,70 @@ void operatorControl() {
 
 		//START OF THE LIFT CODE
 
-		int upSpeedRight = 100;
-		int upSpeedLeft = 100;
+		int upSpeedRight = 127;
+		int upSpeedLeft = -127;
 
-		int rightLiftPot = abs(analogReadCalibrated(1));
-		int leftLiftPot = abs(analogReadCalibrated(2));
+		int downSpeedRight = -80;
+		int downSpeedLeft = 80;
 
-
-		if ((rightLiftPot < (leftLiftPot - 250)) ) {
-				upSpeedLeft = -70;
-				upSpeedRight = 100;
-		} else if ((leftLiftPot < (rightLiftPot + 600))  ){
-				upSpeedRight = 70;
-				upSpeedLeft = -100;
-		} else {
-				upSpeedRight = 90;
-				upSpeedLeft = -90;
-		}
+		float p = 13.0f;
 
 
+		if (encoderGet(rightLiftEncoder) < (encoderGet(leftLiftEncoder) -	 5)) {
+            upSpeedLeft = -50;
+            upSpeedRight = 125;
+        } else if (encoderGet(leftLiftEncoder) < (encoderGet(rightLiftEncoder) - 5)) {
+            upSpeedRight = 50;
+            upSpeedLeft = -125;
+        } else {
+            upSpeedRight = 125;
+            upSpeedLeft = -125;
+        }
+
+
+
+        //Tele op Lift controls
+        if (joystickGetDigital(1, 8, JOY_UP)) { //lift comes up on button click
+            motorSet(LEFT_LIFT_MOTOR, upSpeedLeft);
+            motorSet(RIGHT_LIFT_MOTOR, upSpeedRight);
+            c = 1;
+        } else if (joystickGetDigital(1, 8, JOY_DOWN)) { //lift goes down on button click
+            c = 0;
+            motorSet(LEFT_LIFT_MOTOR, - upSpeedLeft);
+            motorSet(RIGHT_LIFT_MOTOR, - upSpeedRight);
+            c = 2;
+        } else {
+          motorSet(LEFT_LIFT_MOTOR, 0); //hold power while the button is not being pressed
+          motorSet(RIGHT_LIFT_MOTOR, 0);
+
+        }
+
+		/*
 
 		if (joystickGetDigital(1, 8, JOY_UP)) { //lift comes up on button click
 				motorSet(LEFT_LIFT_MOTOR, upSpeedLeft);
 				motorSet(RIGHT_LIFT_MOTOR, upSpeedRight);
-				c = 1;
+				c = encoderGet(rightLiftEncoder);
+				b = encoderGet(leftLiftEncoder);
+
 		} else if (joystickGetDigital(1, 8, JOY_DOWN)) { //lift goes down on button click
-				c = 0;
-				motorSet(LEFT_LIFT_MOTOR, 25);
-				motorSet(RIGHT_LIFT_MOTOR, -25);
-				c = 2;
-		} else if (c == 1){
-			motorSet(LEFT_LIFT_MOTOR, -25);
-			motorSet(RIGHT_LIFT_MOTOR, 25);
+				c = encoderGet(rightLiftEncoder);
+				b = encoderGet(leftLiftEncoder);
+				motorSet(LEFT_LIFT_MOTOR, downSpeedLeft );
+				motorSet(RIGHT_LIFT_MOTOR, downSpeedRight);
 
 		}else {
-			motorSet(LEFT_LIFT_MOTOR, 0);
-			motorSet(RIGHT_LIFT_MOTOR, 0);
+			if(abs( (b - c))  > 8){
+				motorSet(LEFT_LIFT_MOTOR,  ((b - c) * p) );
+				motorSet(RIGHT_LIFT_MOTOR, ((b - c) * p));
+			}else {
+				//motorSet(LEFT_LIFT_MOTOR, -30);
+				//motorSet(RIGHT_LIFT_MOTOR, 30);
+			}
 
 		}
 
+		*/
 
 		//END OF THE LIFT CODE
 
@@ -163,12 +191,12 @@ void operatorControl() {
 
 		//START OF INTAKE CODE
 
-		int intakeUpSpeed = 127;
-		int intakeDownSpeed = -50;
+		int intakeUpSpeed = 80;
+		int intakeDownSpeed = -80;
 
-		if(joystickGetDigital(1, 7, JOY_UP)) {
+		if(joystickGetDigital(1, 5, JOY_UP)) {
 			motorSet(INTAKE_MOTOR, intakeUpSpeed);
-		}else if (joystickGetDigital(1, 7, JOY_DOWN)) {
+		}else if (joystickGetDigital(1, 5, JOY_DOWN)) {
 			motorSet(INTAKE_MOTOR, intakeDownSpeed);
 		}else {
 			motorSet(INTAKE_MOTOR, 0);
@@ -195,15 +223,7 @@ void operatorControl() {
 
 		//START OF AUTO STACK CODE
 
-		if (joystickGetDigital(1, 5, JOY_UP)) {
-				autoStack();
-				printf("%d \n", autoStackCounter);
-				c = 1;
-				autoStackCounter++;
 
-		}else if (joystickGetDigital(1, 5, JOY_DOWN)){
-				autoStackCounter = 0;
-		}
 
 		if(joystickGetDigital(1, 7, JOY_LEFT)){
 			autoStackBreaker = 1;
@@ -254,7 +274,7 @@ void autoStack() {
 
 
 			chainbarMove(chainbarHeight + 900);// BRINGS THE CHAINBAR TO THE pre height
-			chainbarHoldSet(chainbarHeight + 900);
+			//chainbarHoldSet(chainbarHeight + 900);
 
 			if(autoStackCounter > 0){
 
@@ -265,7 +285,7 @@ void autoStack() {
 			}
 
 			chainbarMove(chainbarHeight );// BRINGS THE CHAINBAR TO THE pre height
-			chainbarHoldSet(chainbarHeight );
+			//chainbarHoldSet(chainbarHeight );
 
 			delay(150);
 
@@ -279,7 +299,7 @@ void autoStack() {
 
 
 			chainbarMove(2600);
-			chainbarHoldSet(2600);
+			//chainbarHoldSet(2600);
 
 			if(autoStackCounter > 0 ){
 				liftMove(10);

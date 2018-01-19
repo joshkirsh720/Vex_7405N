@@ -104,27 +104,26 @@ void chainbarMove(int position) { //takes in the desired position of the chainba
         }
       }
 
-      	chainbarHoldSet(position);
+      	//chainbarHoldSet(position);
 
 }
 
 
-void chainbarHoldSet(int position){
-  int chainbarHold = 0;
+void liftMoveP(int position){
+  float p = 1.0f;
+  int thresh = 100;
+  while(abs(position - analogReadCalibrated(1)) > thresh ) {
+      liftSet( ((position - analogRead(2)) * p), (( position-analogReadCalibrated(1)) *p ) );
+  }
+}
 
+void chainbarMoveP(int position){
+  float p = 1.0f;
+  int thresh = 100;
 
-	if (analogRead(4) < 900){
-		chainbarHold = -20;
-
-	}else if ((analogRead(4) > 1000) && (analogRead(4) < 1600)){
-		chainbarHold = -10;
-	}else if (analogRead(4) > 1300){
-		chainbarHold = 15;
-	}else {
-		chainbarHold = 0;
-	}
-
-  motorSet(CHAINBAR_MOTOR, chainbarHold);
+  while(abs(position - analogReadCalibrated(1)) > thresh ) {
+    //chainbarSet((position - analogRead(4)) * p);
+  }
 }
 
 

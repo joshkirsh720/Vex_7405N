@@ -26,7 +26,6 @@
 #define MAIN_H_
 
 #include <API.h>
-#include "functions.h"
 
 // Allow usage of this file in C++ programs
 #ifdef __cplusplus
@@ -93,31 +92,7 @@ void initialize();
  *
  * This task should never exit; it should end with some kind of infinite loop, even if empty.
  */
-
- void operatorControl();
-
- void liftMove(int position);
-
- void chainbarMove(int position);
-
- void autoStack();
-
- void chainbarHoldSet(int position);
-
- void matchStack();
-
- void liftMoveP(int position);
- void chainbarMoveP(int position);
-
-
-
- Encoder leftLiftEncoder;
- Encoder rightLiftEncoder;
-
-  Encoder encoder;
-
- Gyro gyro;
-
+void operatorControl();
 
 // End C++ export structure
 #ifdef __cplusplus
