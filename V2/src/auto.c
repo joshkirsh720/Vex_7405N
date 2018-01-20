@@ -35,7 +35,7 @@ void autonomous() {
   imeReset(0);
   imeReset(1);
 
-  int auton = 2;
+  int auton = 1;
 
   if(auton == 1) {
     auton1(true);
@@ -53,10 +53,10 @@ void initialConeStack() {
   intakeSet(50);
   delay(50);
   chainbarSet(-127);
-  delay(700);
+  delay(900);
 //Now past gates
   chainbarSet(127);
-  delay(600);
+  delay(800);
 //chainbar is now at top
   chainbarSet(15);
   intakeSet(-127); //realeasing
@@ -131,12 +131,12 @@ void auton1(bool blueTeam) {
 
   //move backwards
   chassisSet(-127, -127);
-  delay(1800);
+  delay(2200);
   chassisSet(0, 0);
 
   //turn right if blue team left if red team
   blueTeam ? chassisSet(127, -127) : chassisSet(-127, 127);
-  blueTeam ? delay(850) : delay(850); //2nd value is a dummy value
+  blueTeam ? delay(1000) : delay(1000); //2nd value is a dummy value
   //quickly reverse motors to stop overrotation
   blueTeam ? chassisSet(-127, 127) : chassisSet(127, -127);
   chassisSet(0, 0);
