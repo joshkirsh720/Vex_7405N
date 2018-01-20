@@ -75,7 +75,11 @@ void gyroCorrect();
 
 void gyroTurn(int val);
 
+void intakeSet(int speed);
 
+void chainbarSet(int speed);
+
+void dropMobileGoal();
 
 
 #endif

@@ -1,4 +1,3 @@
-
 /** @file auto.c
  * @brief File for autonomous code
  *
@@ -26,16 +25,49 @@
  * The autonomous task may exit, unlike operatorControl() which should never exit. If it does
  * so, the robot will await a switch to another mode or disable/enable cycle.
  */
+void auton1(bool blueTeam), initialConeStack();
+
 void autonomous() {
 
-  motorSet(INTAKE_MOTOR, 30);
+  printf("Power Level: %d\n", powerLevelMain());
 
   gyroReset(gyro);
   imeReset(0);
   imeReset(1);
 
-  bool blueTeam = true  , useTime = false;
-  int speed = 90, degree = 5;
+  int auton = 2;
+
+  if(auton == 1) {
+    auton1(true);
+  }
+  else if(auton == 2) {
+    auton1(false);
+  }
+  else {
+    initialConeStack();
+  }
+  //...continue with more autonomous functions when more are written
+}
+
+void initialConeStack() {
+  intakeSet(50);
+  delay(50);
+  chainbarSet(-127);
+  delay(700);
+//Now past gates
+  chainbarSet(127);
+  delay(600);
+//chainbar is now at top
+  chainbarSet(15);
+  intakeSet(-127); //realeasing
+  delay(300);
+  intakeSet(0);
+}
+
+void auton1(bool blueTeam) {
+
+
+  liftSet(-40, -40);
 
   //stop all motors
   chassisSet(0,0);
@@ -51,69 +83,60 @@ void autonomous() {
   //stop mobile goal lift movement but keep driving forward
   mobileLiftSet(0);
 
-  delay(300);
+  delay(250);
   chassisSet(0, 0);
-
 
   chassisSet(127, 127);
   //stop forward movement after time
-  delay(1000);
+  delay(700);
   chassisSet(0, 0);
 
   //move mobile goal lift up
   mobileLiftSet(-127);
   delay(1000);
-  mobileLiftSet(0);
+  mobileLiftSet(-15);
 
 
-  motorSet(INTAKE_MOTOR, 80);
-  delay(200);
-  motorSet(INTAKE_MOTOR, 30);
+  //drop preload cone on mobile goal
 
-  chainbarMove(940);
-  motorSet(CHAINBAR_MOTOR, 10);
+  initialConeStack();
 
-  motorSet(INTAKE_MOTOR, -80);
-  delay(600);
-  motorSet(INTAKE_MOTOR, 0);
+  //2nd cone
+  chassisSet(127, 127);
+  delay(100);
+  chassisSet(0, 0);
 
-  //1360 move value up
-  //down is negative for the motor
-  /*motorSet(CHAINBAR, -127);
-  while(analogRead(CHAINBAR_POTEN) < 1360);
-  chainbarHoldSet(1360);
-  motorSet(INTAKE, -127);
+  intakeSet(127);
+  chainbarSet(-127);
+  delay(1150);
+
+  //cone is picked up
+  chainbarSet(127);
   delay(500);
-  motorSet(INTAKE, 0);
-  motorSet(CHAINBAR, 127);
-  delay(600);
-  motorSet(CHAINBAR, 0);*/
-
-
-  /*//right is negative left is positive
-  if(gyroGet(gyro) < -5) {
-    chassisSet(-speed, speed);
-    while(gyroGet(gyro) < -5);
-    chassisSet(speed, -speed);
-    chassisSet(0, 0);
-  }
-  else if(gyroGet(gyro) > 5) {
-    chassisSet(speed, -speed);
-    while(gyroGet(gyro) > 5);
-    chassisSet(-speed, speed);
-    chassisSet(0, 0);
-  }*/
+  liftSet(80,80);
+  delay(150);
+  //chainbarSet(127);
+  //delay(200);
+  liftSet(0,0);
+  //intakeSet(60);
+  delay(500);
+  liftSet(-80,-80);
+  delay(300);
+  liftSet(0,0);
+  intakeSet(-127);
+  delay(100);
+  chainbarSet(20);
+  liftSet(-40, -40);
 
 
   //move backwards
-
   chassisSet(-127, -127);
-  delay(1700);
+  delay(1800);
   chassisSet(0, 0);
 
   //turn right if blue team left if red team
   blueTeam ? chassisSet(127, -127) : chassisSet(-127, 127);
-  delay(800);
+  blueTeam ? delay(850) : delay(850); //2nd value is a dummy value
   //quickly reverse motors to stop overrotation
   blueTeam ? chassisSet(-127, 127) : chassisSet(127, -127);
   chassisSet(0, 0);
@@ -121,28 +144,22 @@ void autonomous() {
 
   //move forward
   chassisSet(127, 127);
-  delay(600);
+  delay(550);
   chassisSet(0, 0);
 
   //turn to face goal
   blueTeam ? chassisSet(127, -127) : chassisSet(-127, 127);
-  delay(650);
+  blueTeam ? delay(600): delay(600); //2nd value is a dummy value
   chassisSet(0, 0);
 
-  //move forward into 20 pt zone
-  chassisSet(127, 127);
-  delay(1250);
-  chassisSet(0, 0);
+  //lift needs to move down for 300 ms
+  //drive needs to move forward for 1250 ms
 
-  //mobile goal lift down
-  mobileLiftSet(127);
-  delay(600);
-  mobileLiftSet(0);
+  dropMobileGoal();
 
   //back up
   chassisSet(-127, -127);
-  delay(1000);
+  delay(500);
   chassisSet(0, 0);
-
 
 }

@@ -148,3 +148,30 @@ void gyroCorrect() {
 void gyroTurn(int val) {
 
 }
+
+void chainbarSet(int speed) {
+  motorSet(CHAINBAR_MOTOR, speed);
+}
+
+void intakeSet(int speed) {
+  motorSet(INTAKE_MOTOR, speed);
+}
+
+void dropMobileGoal() {
+  //total time delayed should be 1475
+
+  //move forward into 20 pt zone
+  //and mobile goal down
+  chassisSet(127, 127);
+
+  delay(1000);
+  mobileLiftSet(127);
+
+  delay(600);
+  mobileLiftSet(0);
+
+  //back up a bit
+  chassisSet(-127, -127);
+  delay(300);
+  chassisSet(0, 0);
+}
