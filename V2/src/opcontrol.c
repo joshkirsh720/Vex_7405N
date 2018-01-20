@@ -49,8 +49,8 @@ void operatorControl() {
 
 		//START PRE DETERMINED HOLD POWER FOR DIFFERENT PARTS OF THE ROBOT
 
-printf("%d \n", encoderGet(rightLiftEncoder));
-printf("%d \n", encoderGet(leftLiftEncoder));
+printf("%d \n", abs(encoderGet(rightLiftEncoder)));
+printf("%d \n", abs(encoderGet(leftLiftEncoder)));
 		//START OF HOLD POWER FOR THE CHAINBAR
 		//START OF HOLD POWER FOR THE CHAINBAR
 
@@ -105,8 +105,8 @@ printf("%d \n", encoderGet(leftLiftEncoder));
 
 		//START OF THE LIFT CODE
 
-		int upSpeedRight = 127;
-		int upSpeedLeft = -127;
+		int upSpeedRight = 100;
+		int upSpeedLeft = -100;
 
 		int downSpeedRight = -80;
 		int downSpeedLeft = 80;
@@ -114,12 +114,12 @@ printf("%d \n", encoderGet(leftLiftEncoder));
 		float p = 13.0f;
 
 
-		if (encoderGet(rightLiftEncoder) < (encoderGet(leftLiftEncoder) -	 5)) {
-            upSpeedLeft = -50;
-            upSpeedRight = 125;
-        } else if (encoderGet(leftLiftEncoder) < (encoderGet(rightLiftEncoder) - 5)) {
-            upSpeedRight = 50;
-            upSpeedLeft = -125;
+		if (abs(encoderGet(rightLiftEncoder)) < abs((encoderGet(leftLiftEncoder)) -	 5)) {
+            upSpeedLeft = -70;
+            upSpeedRight = 100;
+        } else if (abs(encoderGet(leftLiftEncoder)) < abs((encoderGet(rightLiftEncoder)) - 5)) {
+            upSpeedRight = 70;
+            upSpeedLeft = -100;
         } else {
             upSpeedRight = 125;
             upSpeedLeft = -125;
@@ -137,12 +137,16 @@ printf("%d \n", encoderGet(leftLiftEncoder));
             motorSet(LEFT_LIFT_MOTOR, - upSpeedLeft);
             motorSet(RIGHT_LIFT_MOTOR, - upSpeedRight);
             c = 2;
-        } else {
+        } else if (abs(encoderGet(rightLiftEncoder)) < 5){
+					motorSet(LEFT_LIFT_MOTOR, 15); //hold power while the button is not being pressed
+          motorSet(RIGHT_LIFT_MOTOR, -15);
+
+
+ 				}else {
           motorSet(LEFT_LIFT_MOTOR, 0); //hold power while the button is not being pressed
           motorSet(RIGHT_LIFT_MOTOR, 0);
 
         }
-
 		/*
 
 		if (joystickGetDigital(1, 8, JOY_UP)) { //lift comes up on button click
@@ -177,6 +181,8 @@ printf("%d \n", encoderGet(leftLiftEncoder));
 
 		int chainbarUpSpeed = 127;
 		int chainbarDownSpeed = -127;
+		int chainbarHold = 15;
+
 
 		if(joystickGetDigital(1, 8, JOY_RIGHT)){
 			motorSet(CHAINBAR_MOTOR, chainbarUpSpeed);
