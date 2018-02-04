@@ -70,7 +70,6 @@ printf("%d \n", abs(encoderGet(leftLiftEncoder)));
 
 
 
-		//END PRE DETERMINED HOLD POWER FOR DIFFERENT PARTS OF THE ROBOT
 
 
 
@@ -85,15 +84,11 @@ printf("%d \n", abs(encoderGet(leftLiftEncoder)));
 
 
 		//if the right joystick is being moved horizontally
-		if(sideMotion != 0) {
+		if(abs(sideMotion )>20 || abs(forwardMotion )>20) {
 			//turn
-			chassisSet(sideMotion, -sideMotion);
+			chassisSet(forwardMotion+sideMotion, forwardMotion- sideMotion);
 		}
-		//if the left joystick is being moved vertically
-		else if(forwardMotion != 0) {
-			//move forwards/backwards
-			chassisSet(forwardMotion, forwardMotion);
-		}
+
 		//if neither joystick is being moved
 		else {
 			//stop
@@ -105,15 +100,15 @@ printf("%d \n", abs(encoderGet(leftLiftEncoder)));
 
 		//START OF THE LIFT CODE
 
-		int upSpeedRight = 100;
-		int upSpeedLeft = -100;
+		int upSpeedRight = 127;
+		int upSpeedLeft = -127;
 
 		int downSpeedRight = -80;
 		int downSpeedLeft = 80;
 
 		float p = 13.0f;
 
-
+		/*
 		if (abs(encoderGet(rightLiftEncoder)) < abs((encoderGet(leftLiftEncoder)) -	 5)) {
             upSpeedLeft = -70;
             upSpeedRight = 100;
@@ -123,7 +118,7 @@ printf("%d \n", abs(encoderGet(leftLiftEncoder)));
         } else {
             upSpeedRight = 125;
             upSpeedLeft = -125;
-        }
+
 
 
 
@@ -146,7 +141,27 @@ printf("%d \n", abs(encoderGet(leftLiftEncoder)));
           motorSet(LEFT_LIFT_MOTOR, 0); //hold power while the button is not being pressed
           motorSet(RIGHT_LIFT_MOTOR, 0);
 
-        }
+
+				*/
+				//Tele op Lift controls
+        if (joystickGetDigital(1, 8, JOY_UP)) { //lift comes up on button click
+            motorSet(LEFT_LIFT_MOTOR, -127 );
+            motorSet(RIGHT_LIFT_MOTOR, 127);
+
+        } else if (joystickGetDigital(1, 8, JOY_DOWN)) { //lift goes down on button click
+
+            motorSet(LEFT_LIFT_MOTOR, - upSpeedLeft);
+
+            motorSet(RIGHT_LIFT_MOTOR, - upSpeedRight);
+
+        } else if(encoderGet(leftLiftEncoder) < 15){
+					motorSet(LEFT_LIFT_MOTOR, 15);
+					motorSet(RIGHT_LIFT_MOTOR, -15);
+
+				}else{
+					motorSet(LEFT_LIFT_MOTOR, -15);
+					motorSet(RIGHT_LIFT_MOTOR, 15);
+				}
 		/*
 
 		if (joystickGetDigital(1, 8, JOY_UP)) { //lift comes up on button click
@@ -197,8 +212,8 @@ printf("%d \n", abs(encoderGet(leftLiftEncoder)));
 
 		//START OF INTAKE CODE
 
-		int intakeUpSpeed = 80;
-		int intakeDownSpeed = -80;
+		int intakeUpSpeed = -120;
+		int intakeDownSpeed = 60;
 
 		if(joystickGetDigital(1, 5, JOY_UP)) {
 			motorSet(INTAKE_MOTOR, intakeUpSpeed);

@@ -43,7 +43,7 @@ void initialize() {
     analogCalibrate(1); //calibrating the potentiometer on the right side of the lift
     analogCalibrate(2); //calibrating the potentiometer on the left side of the liftt
     analogCalibrate(4); //clibrating the potentiometer on the chainbar
-    leftLiftEncoder = encoderInit(12, 11, false);
-    rightLiftEncoder = encoderInit(8, 7, false);
+    leftLiftEncoder = encoderInit(2, 1 , false);//yeah man you tell em
+    rightLiftEncoder = encoderInit(3, 4, true);
 
 }

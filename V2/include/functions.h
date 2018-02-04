@@ -27,6 +27,8 @@
 //mobile goal definition
 #define MOBILE_LIFT_MOTOR 10 //mobile goal
 
+#define GYRO 2
+
 
 typedef enum {
   left,
@@ -51,9 +53,6 @@ bool updateIMEs(int *left, int *right);
 //checks to make sure that the robot is moving straight
 void gyroCheck(direction direc);
 
-//wait for IMEs to reach a certain value
-void waitForIMEs(int value, direction direc, bool moveMobile);
-
 //waits for the gyro to reach a certain value
 //only to be used when turning
 void waitForGyro(int degrees, direction direc);
@@ -69,7 +68,7 @@ void mobileLiftSet(int speed);
 
 void chainbarHoldSet(int position);
 
-void imeWait(int val);
+void imeWait(int val, bool moveML);
 
 void gyroCorrect();
 
@@ -79,7 +78,7 @@ void intakeSet(int speed);
 
 void chainbarSet(int speed);
 
-void dropMobileGoal();
+void dropMobileGoal(bool time);
 
 
 #endif

@@ -6,10 +6,10 @@
 
 
 void chassisSet(int left, int right) {
-  motorSet(LEFT_MOTOR_PORT_1, left);
-  motorSet(LEFT_MOTOR_PORT_2, left);
+  motorSet(LEFT_MOTOR_PORT_1, -left);
+  motorSet(LEFT_MOTOR_PORT_2, -left);
   motorSet(RIGHT_MOTOR_PORT_1, -right);
-  motorSet(RIGHT_MOTOR_PORT_2, right);
+  motorSet(RIGHT_MOTOR_PORT_2, -right);
 }
 
 void liftSet(int left, int right) {
@@ -130,15 +130,25 @@ void chainbarMoveP(int position){
 
 //INCOMPLETE
 //NO GYRO CORRECT AND NEEDS TO BE ABLE TO GO BACKWARDS
-void imeWait(int val) {
-  int leftIme, rightIme;
+void imeWait(int val, bool moveML) {
 
-  while(abs(leftIme) < val || abs(rightIme) < val) {
+
+  int rightIme;
+  //int leftIme;
+
+  //waits until the IME hits a certain value val
+  while(abs(rightIme) < val) {
     imeGet(0, &rightIme);
-    imeGet(1, &leftIme);
+    //imeGet(1, &leftIme);
 
-    gyroCorrect();
+    //printf("Left IME: %d \n", leftIme);
+    printf("Right IME: %d \n", rightIme);
+
+    if(moveML && abs(rightIme) >= val/2) mobileLiftSet(0);
+
+    //gyroCorrect();
   }
+  mobileLiftSet(0);
 }
 
 void gyroCorrect() {
@@ -156,22 +166,30 @@ void chainbarSet(int speed) {
 void intakeSet(int speed) {
   motorSet(INTAKE_MOTOR, speed);
 }
-
-void dropMobileGoal() {
+void dropMobileGoal(bool time) {
   //total time delayed should be 1475
 
   //move forward into 20 pt zone
   //and mobile goal down
+  mobileLiftSet(127);
+  delay(400);
+  mobileLiftSet(0);
+
   chassisSet(127, 127);
 
-  delay(1000);
+  delay(500);
   mobileLiftSet(127);
 
-  delay(600);
+  delay(700);
   mobileLiftSet(0);
 
   //back up a bit
   chassisSet(-127, -127);
   delay(300);
   chassisSet(0, 0);
+
+  //mobile goal up
+  mobileLiftSet(-127);
+  delay(600);
+  mobileLiftSet(0);
 }
