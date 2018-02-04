@@ -81,4 +81,26 @@ void chainbarSet(int speed);
 void dropMobileGoal(bool time);
 
 
+ void operatorControl();
+
+ void liftMove(int position);
+
+ void chainbarMove(int position);
+
+ void autoStack();
+
+ void matchStack();
+
+ void liftMoveP(int position);
+ void chainbarMoveP(int position);
+
+
+
+ Encoder leftLiftEncoder;
+ Encoder rightLiftEncoder;
+
+  Encoder encoder;
+
+ Gyro gyro;
+
 #endif

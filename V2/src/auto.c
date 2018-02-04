@@ -28,7 +28,7 @@
 void auton1(bool blueTeam), initialConeStack(), auton2(bool blueTeam);
 
 void autonomous() {
-/*
+
 
 
   printf("Power Level: %d\n", powerLevelMain());
@@ -36,7 +36,7 @@ void autonomous() {
   gyroReset(gyro);
   imeReset(0);
 
-  int auton =  1;
+  int auton =  2;
 
   if(auton == 1) {
     auton1(true);
@@ -137,13 +137,36 @@ void auton1(bool blueTeam) {
   //move backwards
   imeReset(0);
   chassisSet(-127, -127);
-  imeWait(imeValue + 100, false);
+  imeWait(imeValue + 100 , false);
   chassisSet(0, 0);
 
   delay(200);
 
+
   int rotationSpeed = 85;
 
+//BEGIN TEMP ADDITION
+  //turn
+  gyroReset(gyro);
+  blueTeam ? chassisSet(rotationSpeed, -rotationSpeed) : chassisSet(-rotationSpeed, rotationSpeed);
+  while(abs(gyroGet(gyro)) < 180);
+  blueTeam ? chassisSet(-rotationSpeed, rotationSpeed) : chassisSet(rotationSpeed, -rotationSpeed);
+  chassisSet(0, 0);
+
+  chassisSet(127, 127);
+  delay(300);
+  chassisSet(0, 0);
+
+  mobileLiftSet(127);
+  delay(1400);
+  mobileLiftSet(0);
+
+  chassisSet(-127, -127);
+  delay(500);
+  chassisSet(0, 0);
+//END TEMP ADDITION
+
+/*
   //turn
   gyroReset(gyro);
   blueTeam ? chassisSet(rotationSpeed, -rotationSpeed) : chassisSet(-rotationSpeed, rotationSpeed);
@@ -175,11 +198,10 @@ void auton1(bool blueTeam) {
   chassisSet(-127, -127);
   delay(500);
   chassisSet(0, 0);
+*/
 }
 
 void auton2(bool blueTeam) {
 
 
-}
-*/
 }

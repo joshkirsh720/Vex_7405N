@@ -1,7 +1,8 @@
 
 #include "main.h"
 
-
+#ifndef OPCONTORL
+#define OPCONTROL
 
 //drive definitions
 #define LEFT_MOTOR_PORT_1 5
@@ -42,10 +43,10 @@ int chainbarHold;
 
 
 void operatorControl() {
-
+//try {
 
 	encoderReset(encoder); //resetting the encoder values for the encoder
-
+	int a = 3;
 	while (1) {
 
 		//START PRE DETERMINED HOLD POWER FOR DIFFERENT PARTS OF THE ROBOT
@@ -260,6 +261,9 @@ void operatorControl() {
 
 		delay(10);
 	}
+/*} catch(...) {
+	print("test exception ");
+}*/
 }
 
 void autoStack() {
@@ -427,3 +431,4 @@ void matchStack() {
 
 
 }
+#endif
