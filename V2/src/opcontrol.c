@@ -43,14 +43,16 @@ int chainbarHold;
 
 void operatorControl() {
 
-	  encoderReset(encoder); //resetting the encoder values for the encoder
+
+	encoderReset(encoder); //resetting the encoder values for the encoder
 
 	while (1) {
 
 		//START PRE DETERMINED HOLD POWER FOR DIFFERENT PARTS OF THE ROBOT
 
-printf("%d \n", abs(encoderGet(rightLiftEncoder)));
-printf("%d \n", abs(encoderGet(leftLiftEncoder)));
+		printf("%d \n", abs(encoderGet(rightLiftEncoder)));
+		printf("%d \n", abs(encoderGet(leftLiftEncoder)));
+
 		//START OF HOLD POWER FOR THE CHAINBAR
 		//START OF HOLD POWER FOR THE CHAINBAR
 

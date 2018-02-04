@@ -25,18 +25,18 @@
  * The autonomous task may exit, unlike operatorControl() which should never exit. If it does
  * so, the robot will await a switch to another mode or disable/enable cycle.
  */
-void auton1(bool blueTeam), initialConeStack();
+void auton1(bool blueTeam), initialConeStack(), auton2(bool blueTeam);
 
 void autonomous() {
-  /*
+/*
+
 
   printf("Power Level: %d\n", powerLevelMain());
 
   gyroReset(gyro);
   imeReset(0);
-  imeReset(1);
 
-  int auton = 1;
+  int auton =  1;
 
   if(auton == 1) {
     auton1(true);
@@ -44,93 +44,142 @@ void autonomous() {
   else if(auton == 2) {
     auton1(false);
   }
-  else {
-    initialConeStack();
+  else if(auton == 3){
+    auton2(true);
+  }
+  else if(auton == 4) {
+    auton2(false);
   }
   //...continue with more autonomous functions when more are written
 }
 
 void initialConeStack() {
-  intakeSet(50);
-  delay(50);
+
   chainbarSet(-127);
-  delay(900);
-//Now past gates
+  delay(700);
   chainbarSet(127);
-  delay(800);
-//chainbar is now at top
-  chainbarSet(15);
-  intakeSet(-127); //realeasing
-  delay(300);
+  delay(600);
+  chainbarSet(0);
+
+  liftSet(-100, -100);
+  delay(200);
+  intakeSet(-50);
+  delay(200);
+  liftSet(0, 0);
   intakeSet(0);
+
+  delay(200);
 }
 
 void auton1(bool blueTeam) {
 
 
-  //stop all motors
-  chassisSet(0,0);
-  liftSet(0,0);
-  mobileLiftSet(0);
+  const int imeValue = 1424; //4704
 
-  //move mobile goal lift down
+  imeReset(0);
+
+  intakeSet(15);
+  chassisSet(0, 0);
+  liftSet(100, 100);
   mobileLiftSet(127);
-  //start moving
-  chassisSet(127,127);
+  delay(300); //give time for lift to go up
+  liftSet(0, 0);
 
-  delay(700);
-  //stop mobile goal lift movement but keep driving forward
+  delay(300);
+
+  gyroReset(gyro);
+
+  //start moving forward
+  chassisSet(127, 127);
+
+  imeWait(imeValue, true);
+
+  chassisSet(0, 0);
+
+  //pick up mobile goal
+  mobileLiftSet(-127);
+  delay(1400);
   mobileLiftSet(0);
 
-  delay(250);
-  chassisSet(0, 0);
 
+  initialConeStack();
+
+  imeReset(0);
+  //second cone
   chassisSet(127, 127);
-  //stop forward movement after time
-  delay(700);
+  imeWait(200, false);
   chassisSet(0, 0);
 
-  //move mobile goal lift up
-  mobileLiftSet(-127);
-  delay(1000);
-  mobileLiftSet(-15);
+  chainbarSet(-127);
+  liftSet(-100, -100);
+  delay(400);
+  liftSet(-30, -30);
+  intakeSet(100);
+  delay(500);
+  intakeSet(15);
 
+  //cone is picked up
+  chainbarSet(127);
+  delay(900);
+  liftSet(100, 100);
+  delay(400);
+  liftSet(0, 0);
+  chainbarSet(0);
 
-  //drop preload cone on mobile goal
+  liftSet(-100, -100);
+  delay(200);
+  liftSet(0, 0);
 
+  intakeSet(-100);
+  delay(500);
+  intakeSet(0);
 
   //move backwards
+  imeReset(0);
   chassisSet(-127, -127);
-  delay(1400);
+  imeWait(imeValue + 100, false);
   chassisSet(0, 0);
 
-  //turn right if blue team left if red team
-  blueTeam ? chassisSet(127, -127) : chassisSet(-127, 127);
-  blueTeam ? delay(900) : delay(900); //2nd value is a dummy value
-  //quickly reverse motors to stop overrotation
-  blueTeam ? chassisSet(-127, 127) : chassisSet(127, -127);
+  delay(200);
+
+  int rotationSpeed = 85;
+
+  //turn
+  gyroReset(gyro);
+  blueTeam ? chassisSet(rotationSpeed, -rotationSpeed) : chassisSet(-rotationSpeed, rotationSpeed);
+  while(abs(gyroGet(gyro)) < 128);
+  blueTeam ? chassisSet(-rotationSpeed, rotationSpeed) : chassisSet(rotationSpeed, -rotationSpeed);
   chassisSet(0, 0);
 
-
+  imeReset(0);
   //move forward
   chassisSet(127, 127);
-  delay(650);
+  imeWait(600, false);
   chassisSet(0, 0);
 
   //turn to face goal
-  blueTeam ? chassisSet(127, -127) : chassisSet(-127, 127);
-  blueTeam ? delay(600): delay(600); //2nd value is a dummy value
+  gyroReset(gyro);
+  blueTeam ? chassisSet(rotationSpeed, -rotationSpeed) : chassisSet(-rotationSpeed, rotationSpeed);
+  while(abs(gyroGet(gyro)) < 80);
+  blueTeam ? chassisSet(-rotationSpeed, rotationSpeed) : chassisSet(rotationSpeed, -rotationSpeed);
   chassisSet(0, 0);
 
-  //lift needs to move down for 300 ms
-  //drive needs to move forward for 1250 ms
+  //drop off mobile goal
+  dropMobileGoal(false);
 
-  dropMobileGoal();
+  //if lift gets stuck
+  mobileLiftSet(-127);
+  delay(600);
+  mobileLiftSet(0);
 
-  //back up
   chassisSet(-127, -127);
   delay(500);
   chassisSet(0, 0);
-  */
+}
 
+void auton2(bool blueTeam) {
+
+
+}
+*/
 }
