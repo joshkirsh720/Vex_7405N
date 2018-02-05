@@ -72,7 +72,7 @@ void initialConeStack() {
 }
 
 void auton1(bool blueTeam) {
-
+  /*
 
   const int imeValue = 1424; //4704
 
@@ -166,7 +166,7 @@ void auton1(bool blueTeam) {
   chassisSet(0, 0);
 //END TEMP ADDITION
 
-/*
+
   //turn
   gyroReset(gyro);
   blueTeam ? chassisSet(rotationSpeed, -rotationSpeed) : chassisSet(-rotationSpeed, rotationSpeed);
