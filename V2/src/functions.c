@@ -130,8 +130,15 @@ void chainbarMoveP(int position){
 
 //INCOMPLETE
 //NO GYRO CORRECT AND NEEDS TO BE ABLE TO GO BACKWARDS
-void imeWait(int val, bool moveML) {
-  int rightIme;
+bool imeWait(int val, bool moveML) {
+  int rightIme = 0;
+
+  imeGet(0, &rightIme);
+
+  if(abs(rightIme) > 3000) {
+    imeShutdown();
+    return false;
+  }
 
   while(abs(rightIme) < val) {
     imeGet(0, &rightIme);
@@ -142,6 +149,8 @@ void imeWait(int val, bool moveML) {
 
     //gyroCorrect();
   }
+
+  return true;
 }
 
 void gyroCorrect() {

@@ -68,7 +68,7 @@ void mobileLiftSet(int speed);
 
 void chainbarHoldSet(int position);
 
-void imeWait(int val, bool moveML);
+bool imeWait(int val, bool moveML);
 
 void gyroCorrect();
 

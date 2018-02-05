@@ -51,6 +51,8 @@ void autonomous() {
     auton2(false);
   }
   //...continue with more autonomous functions when more are written
+
+  imeShutdown();
 }
 
 void initialConeStack() {
@@ -72,7 +74,7 @@ void initialConeStack() {
 }
 
 void auton1(bool blueTeam) {
-  /*
+
 
   const int imeValue = 1424; //4704
 
@@ -92,7 +94,7 @@ void auton1(bool blueTeam) {
   //start moving forward
   chassisSet(127, 127);
 
-  imeWait(imeValue, true);
+  if(!imeWait(imeValue, true)) return;
 
   chassisSet(0, 0);
 
@@ -145,6 +147,9 @@ void auton1(bool blueTeam) {
 
   int rotationSpeed = 85;
 
+
+
+/*
 //BEGIN TEMP ADDITION
   //turn
   gyroReset(gyro);
@@ -165,6 +170,9 @@ void auton1(bool blueTeam) {
   delay(500);
   chassisSet(0, 0);
 //END TEMP ADDITION
+*/
+
+
 
 
   //turn
@@ -198,7 +206,7 @@ void auton1(bool blueTeam) {
   chassisSet(-127, -127);
   delay(500);
   chassisSet(0, 0);
-*/
+
 }
 
 void auton2(bool blueTeam) {
