@@ -94,6 +94,9 @@ void dropMobileGoal(bool time);
  void liftMoveP(int position);
  void chainbarMoveP(int position);
 
+void autoStack(int position);
+
+void encoderLiftMove(int objective);
 
 
  Encoder leftLiftEncoder;

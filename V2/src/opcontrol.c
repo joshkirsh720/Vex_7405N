@@ -47,11 +47,12 @@ void operatorControl() {
 
 	encoderReset(encoder); //resetting the encoder values for the encoder
 	int a = 3;
+	int stackCounter = 0;
+
 	while (1) {
 
 		//START PRE DETERMINED HOLD POWER FOR DIFFERENT PARTS OF THE ROBOT
 
-		printf("%d \n", abs(encoderGet(rightLiftEncoder)));
 		printf("%d \n", abs(encoderGet(leftLiftEncoder)));
 
 		//START OF HOLD POWER FOR THE CHAINBAR
@@ -71,7 +72,10 @@ void operatorControl() {
 		//END OF HOLD POWER FOR THE CHAINBAR
 
 
-
+		if(joystickGetDigital(1, 7, JOY_UP)) {
+			autoStack(stackCounter);
+			stackCounter++;
+		}
 
 
 
@@ -266,7 +270,7 @@ void operatorControl() {
 }*/
 }
 
-void autoStack() {
+/*void autoStack() {
 
 			int chainbarHeight = 1300;
 			int liftHeight = 0;
@@ -337,7 +341,7 @@ void autoStack() {
 
 
 
-}
+}*/
 
 
 void matchStack() {

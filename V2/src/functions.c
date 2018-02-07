@@ -196,3 +196,67 @@ void dropMobileGoal(bool time) {// your mom is gay
   delay(600);
   mobileLiftSet(0);
 }
+
+void autoStack(int position) {
+  int startingEncoder = abs(encoderGet(leftLiftEncoder));
+  const int stackHeights[6] = {0, 6, 0, 0, 0, 0};
+
+  int objectiveHeight = stackHeights[position];
+
+
+  //move chainbar down and grab cone
+  chainbarSet(-127);
+  intakeSet(50);
+  delay(300);
+  intakeSet(15);
+  chainbarSet(0);
+
+  //move to position to stack cone
+  encoderLiftMove(objectiveHeight);
+
+  //move chainbar into stacking position
+  chainbarSet(127);
+  delay(900);
+  chainbarSet(0);
+
+  //drop cone
+  intakeSet(-100);
+  delay(500);
+  intakeSet(0);
+
+  //move chainbar back
+  chainbarSet(-127);
+  delay(700);
+  chainbarSet(0);
+
+  //lift back to starting position
+  encoderLiftMove(startingEncoder);
+
+
+}
+
+void encoderLiftMove(int objective) {
+  int startingEncoder = abs(encoderGet(leftLiftEncoder));
+  //may need to be switched depending on whether the encoder count up or down (negative)
+  //using only the right encoder
+  int speed = 0;
+
+  //choose direction based off of
+  if(startingEncoder < objective) {
+    speed = 127;
+  }
+  else if(startingEncoder > objective) {
+    speed = -127;
+  }
+  else {
+    return;
+  }
+
+  liftSet(speed, speed);
+
+  while(startingEncoder < objective ?
+    encoderGet(leftLiftEncoder) <= objective :
+    encoderGet(leftLiftEncoder) >= objective);
+
+  liftSet(0, 0);
+}

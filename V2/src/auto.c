@@ -28,7 +28,7 @@
 void auton1(bool blueTeam), initialConeStack(), auton2(bool blueTeam);
 
 void autonomous() {
-
+/*
 
 
   printf("Power Level: %d\n", powerLevelMain());
@@ -53,6 +53,7 @@ void autonomous() {
   //...continue with more autonomous functions when more are written
 
   imeShutdown();
+*/
 }
 
 void initialConeStack() {
