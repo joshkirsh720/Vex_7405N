@@ -48,9 +48,14 @@ void fourBarSet(int val);
 void intakeSet(int val);
 void mobileLiftSet(int val);
 
+void encoderReset();
+
 void autoStack(int cone);
 void encoderLiftMove(int objective);
-void waitForDriveEncoder(int objective);
+void waitForEncoders(int objective);
+void waitForEncoders(int objective, bool moveMG);
+void initialConeStack();
+void dropMobileGoal(bool time);
 
 void pre_auton()
 {
@@ -85,6 +90,7 @@ void pre_auton()
 task autonomous()
 {
   const int imeValue = 1424; //4704
+  const bool blueTeam = true;
 
   intakeSet(15);
   chassisSet(0, 0);
@@ -95,11 +101,9 @@ task autonomous()
 
   delay(300);
 
-  gyroReset(gyro);
-
   //start moving forward
   chassisSet(127, 127);
-
+	waitForEncoders(imeValue, true);
   chassisSet(0, 0);
 
   //pick up mobile goal
@@ -107,16 +111,15 @@ task autonomous()
   delay(1400);
   mobileLiftSet(0);
 
-
   initialConeStack();
 
-  imeReset(0);
+  encoderReset();
   //second cone
   chassisSet(127, 127);
-  imeWait(200, false);
+  waitForEncoders(200);
   chassisSet(0, 0);
 
-  chainbarSet(-127);
+  fourBarSet(-127);
   liftSet(-100, -100);
   delay(400);
   liftSet(-30, -30);
@@ -125,12 +128,12 @@ task autonomous()
   intakeSet(15);
 
   //cone is picked up
-  chainbarSet(127);
+  fourBarSet(127);
   delay(900);
   liftSet(100, 100);
   delay(400);
   liftSet(0, 0);
-  chainbarSet(0);
+  fourBarSet(0);
 
   liftSet(-100, -100);
   delay(200);
@@ -141,9 +144,9 @@ task autonomous()
   intakeSet(0);
 
   //move backwards
-  imeReset(0);
+  encoderReset();
   chassisSet(-127, -127);
-  imeWait(imeValue + 100 , false);
+  waitForEncoders(imeValue + 100);
   chassisSet(0, 0);
 
   delay(200);
@@ -180,22 +183,22 @@ task autonomous()
 
 
   //turn
-  gyroReset(gyro);
+  SensorValue[gyro] = 0;
   blueTeam ? chassisSet(rotationSpeed, -rotationSpeed) : chassisSet(-rotationSpeed, rotationSpeed);
-  while(abs(gyroGet(gyro)) < 128);
+  while(abs(SensorValue[gyro]) < 128);
   blueTeam ? chassisSet(-rotationSpeed, rotationSpeed) : chassisSet(rotationSpeed, -rotationSpeed);
   chassisSet(0, 0);
 
-  imeReset(0);
+  encoderReset();
   //move forward
   chassisSet(127, 127);
-  imeWait(600, false);
+  waitForEncoders(600);
   chassisSet(0, 0);
 
   //turn to face goal
-  gyroReset(gyro);
+  SensorValue[gyro] = 0;
   blueTeam ? chassisSet(rotationSpeed, -rotationSpeed) : chassisSet(-rotationSpeed, rotationSpeed);
-  while(abs(gyroGet(gyro)) < 80);
+  while(abs(SensorValue[gyro]) < 80);
   blueTeam ? chassisSet(-rotationSpeed, rotationSpeed) : chassisSet(rotationSpeed, -rotationSpeed);
   chassisSet(0, 0);
 
@@ -308,6 +311,13 @@ void mobileLiftSet(int val) {
 	motor[mobileGoalLift] = val;
 }
 
+
+void encoderReset() {
+	SensorValue[leftDriveEncoder] = 0;
+	SensorValue[rightDriveEncoder] = 0;
+}
+
+
 void autoStack(int cone) {
 	int startingEncoder = abs(SensorValue[leftLiftEncoder]);
   const int stackHeights[6] = {0, 6, 0, 0, 0, 0};
@@ -370,7 +380,60 @@ void encoderLiftMove(int objective) {
   liftSet(0, 0);
 }
 
-void waitForDriveEncoder(int objective) {
+void waitForEncoders(int objective) {
 	while( abs(SensorValue[rightDriveEncoder]) <= objective ||
 				abs(SensorValue[leftDriveEncoder]) <= objective);
+}
+void waitForEncoders(int objective, bool moveMG) {
+	while( abs(SensorValue[rightDriveEncoder]) <= objective || abs(SensorValue[leftDriveEncoder]) <= objective) {
+
+		if(moveMG && abs(SensorValue[rightDriveEncoder]) >= objective/2) mobileLiftSet(0);
+
+	}
+}
+
+void initialConeStack() {
+
+  fourBarSet(-127);
+  delay(700);
+  fourBarSet(127);
+  delay(600);
+  fourBarSet(0);
+
+  liftSet(-100, -100);
+  delay(200);
+  intakeSet(-50);
+  delay(200);
+  liftSet(0, 0);
+  intakeSet(0);
+
+  delay(200);
+}
+
+void dropMobileGoal(bool time) {
+  //total time delayed should be 1475
+
+  //move forward into 20 pt zone
+  //and mobile goal down
+  mobileLiftSet(127);
+  delay(300);
+  mobileLiftSet(0);
+
+  chassisSet(127, 127);
+
+  delay(500);
+  mobileLiftSet(127);
+
+  delay(800);
+  mobileLiftSet(0);
+
+  //back up a bit
+  chassisSet(-127, -127);
+  delay(300);
+  chassisSet(0, 0);
+
+  //mobile goal up
+  mobileLiftSet(-127);
+  delay(600);
+  mobileLiftSet(0);
 }
