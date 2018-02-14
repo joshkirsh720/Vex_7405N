@@ -1,9 +1,10 @@
 #pragma config(Sensor, in1,    gyro,           sensorGyro)
+#pragma config(Sensor, in2,    ,               sensorAnalog)
 #pragma config(Sensor, dgtl1,  rightDriveEncoder, sensorQuadEncoder)
 #pragma config(Sensor, dgtl3,  leftDriveEncoder, sensorQuadEncoder)
-#pragma config(Sensor, dgtl5,  rightLiftEncoder, sensorRotation)
-#pragma config(Sensor, dgtl6,  leftLiftEncoder, sensorRotation)
-#pragma config(Sensor, dgtl7,  chainbarEncoder, sensorRotation)
+#pragma config(Sensor, dgtl5,  rightLiftEncoder, sensorQuadEncoder)
+#pragma config(Sensor, dgtl7,  leftLiftEncoder, sensorQuadEncoder)
+#pragma config(Sensor, dgtl9,  chainbarEncoder, sensorQuadEncoder)
 #pragma config(Motor,  port1,           mobileGoalLift, tmotorNone, openLoop)
 #pragma config(Motor,  port2,           rightDriveBack, tmotorVex393HighSpeed_MC29, openLoop, reversed)
 #pragma config(Motor,  port3,           leftDriveBack, tmotorVex393HighSpeed_MC29, openLoop)
@@ -255,6 +256,14 @@ task usercontrol() {
 		}
 		//END DRIVE CODE
 
+		if(vexRT[Btn7U] == 1){
+			coneCount++;
+			autoStack(coneCount);
+		}else if(vexRT[Btn7D] == 1) {
+			coneCount--;
+	  }
+
+
 
 		//START MOBILE GOAL LIFT CODE
 		if(vexRT[Btn6D] == 1) mobileLiftSet(127);
@@ -263,30 +272,51 @@ task usercontrol() {
 		//END MOBILE GOAL LIFT CODE
 
 	  //START FOUR BAR CODE
-	  if(vexRT[Btn8R]) fourBarSet(127);
-		else if(vexRT[Btn8L]) fourBarSet(-127);
+	  if(vexRT[Btn8R]) fourBarSet(-127);
+		else if(vexRT[Btn8L]) fourBarSet(127);
 		else fourBarSet(0);
 	  //END FOUR BAR CODE
 
 
 	  //START INTAKE CODE
-	  if(vexRT[Btn5D]) intakeSet(127);
-		else if(vexRT[Btn5U]) intakeSet(-127);
-		else intakeSet(0);
-	  //END INTAKE CODE
+	  if(vexRT[Btn5D]){
+	  	intakeSet(-127);
+	  	c = 0;
+		}else if(vexRT[Btn5U]){
+			intakeSet(127);
+			c = 1;
+		}else if(c == 1) {
+			intakeSet(15);
+		}else {
+		intakeSet(0);
+		}
+		//END INTAKE CODE
+
 
 
 	  //START LIFT CODE
 	  if(vexRT[Btn8U] == 1) {
-	  	liftSet(90, 90);
+	  	liftSet(-90, 90);
 		}
 		else if(vexRT[Btn8D] == 1) {
-			liftSet(-90, -90);
+			liftSet(90, -90);
 		}
 		else {
 			liftSet(0, 0);
 		}
 	  //END LIFT CODE
+
+		if(vexRT[Btn7L] == 1){
+		  fourBarSet(127);
+		  wait1Msec(550);
+		  fourBarSet(0);
+		}else if(vexRT(Btn7R) == 1){
+			fourBarSet(-127);
+		  wait1Msec(550);
+		  fourBarSet(0);
+	}
+
+
   }
 }
 
