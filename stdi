@@ -1,0 +1,199 @@
+[33mcommit 50a8ee93bcaa12f553786f6ab3443315646499ab[m[33m ([m[1;36mHEAD -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: Josh Kirshenbaum <joshua.kirshenbaum@gmail.com>
+Date:   Mon Feb 12 15:47:22 2018 -0500
+
+    refactored auton
+
+[1mdiff --git a/robot/MainControl.c b/robot/MainControl.c[m
+[1mindex c1162ba..5202254 100644[m
+[1m--- a/robot/MainControl.c[m
+[1m+++ b/robot/MainControl.c[m
+[36m@@ -48,9 +48,14 @@[m [mvoid fourBarSet(int val);[m
+ void intakeSet(int val);[m
+ void mobileLiftSet(int val);[m
+ [m
+[32m+[m[32mvoid encoderReset();[m
+[32m+[m
+ void autoStack(int cone);[m
+ void encoderLiftMove(int objective);[m
+[31m-void waitForDriveEncoder(int objective);[m
+[32m+[m[32mvoid waitForEncoders(int objective);[m
+[32m+[m[32mvoid waitForEncoders(int objective, bool moveMG);[m
+[32m+[m[32mvoid initialConeStack();[m
+[32m+[m[32mvoid dropMobileGoal(bool time);[m
+ [m
+ void pre_auton()[m
+ {[m
+[36m@@ -85,6 +90,7 @@[m [mvoid pre_auton()[m
+ task autonomous()[m
+ {[m
+   const int imeValue = 1424; //4704[m
+[32m+[m[32m  const bool blueTeam = true;[m
+ [m
+   intakeSet(15);[m
+   chassisSet(0, 0);[m
+[36m@@ -95,11 +101,9 @@[m [mtask autonomous()[m
+ [m
+   delay(300);[m
+ [m
+[31m-  gyroReset(gyro);[m
+[31m-[m
+   //start moving forward[m
+   chassisSet(127, 127);[m
+[31m-[m
+[32m+[m	[32mwaitForEncoders(imeValue, true);[m
+   chassisSet(0, 0);[m
+ [m
+   //pick up mobile goal[m
+[36m@@ -107,16 +111,15 @@[m [mtask autonomous()[m
+   delay(1400);[m
+   mobileLiftSet(0);[m
+ [m
+[31m-[m
+   initialConeStack();[m
+ [m
+[31m-  imeReset(0);[m
+[32m+[m[32m  encoderReset();[m
+   //second cone[m
+   chassisSet(127, 127);[m
+[31m-  imeWait(200, false);[m
+[32m+[m[32m  waitForEncoders(200);[m
+   chassisSet(0, 0);[m
+ [m
+[31m-  chainbarSet(-127);[m
+[32m+[m[32m  fourBarSet(-127);[m
+   liftSet(-100, -100);[m
+   delay(400);[m
+   liftSet(-30, -30);[m
+[36m@@ -125,12 +128,12 @@[m [mtask autonomous()[m
+   intakeSet(15);[m
+ [m
+   //cone is picked up[m
+[31m-  chainbarSet(127);[m
+[32m+[m[32m  fourBarSet(127);[m
+   delay(900);[m
+   liftSet(100, 100);[m
+   delay(400);[m
+   liftSet(0, 0);[m
+[31m-  chainbarSet(0);[m
+[32m+[m[32m  fourBarSet(0);[m
+ [m
+   liftSet(-100, -100);[m
+   delay(200);[m
+[36m@@ -141,9 +144,9 @@[m [mtask autonomous()[m
+   intakeSet(0);[m
+ [m
+   //move backwards[m
+[31m-  imeReset(0);[m
+[32m+[m[32m  encoderReset();[m
+   chassisSet(-127, -127);[m
+[31m-  imeWait(imeValue + 100 , false);[m
+[32m+[m[32m  waitForEncoders(imeValue + 100);[m
+   chassisSet(0, 0);[m
+ [m
+   delay(200);[m
+[36m@@ -180,22 +183,22 @@[m [mtask autonomous()[m
+ [m
+ [m
+   //turn[m
+[31m-  gyroReset(gyro);[m
+[32m+[m[32m  SensorValue[gyro] = 0;[m
+   blueTeam ? chassisSet(rotationSpeed, -rotationSpeed) : chassisSet(-rotationSpeed, rotationSpeed);[m
+[31m-  while(abs(gyroGet(gyro)) < 128);[m
+[32m+[m[32m  while(abs(SensorValue[gyro]) < 128);[m
+   blueTeam ? chassisSet(-rotationSpeed, rotationSpeed) : chassisSet(rotationSpeed, -rotationSpeed);[m
+   chassisSet(0, 0);[m
+ [m
+[31m-  imeReset(0);[m
+[32m+[m[32m  encoderReset();[m
+   //move forward[m
+   chassisSet(127, 127);[m
+[31m-  imeWait(600, false);[m
+[32m+[m[32m  waitForEncoders(600);[m
+   chassisSet(0, 0);[m
+ [m
+   //turn to face goal[m
+[31m-  gyroReset(gyro);[m
+[32m+[m[32m  SensorValue[gyro] = 0;[m
+   blueTeam ? chassisSet(rotationSpeed, -rotationSpeed) : chassisSet(-rotationSpeed, rotationSpeed);[m
+[31m-  while(abs(gyroGet(gyro)) < 80);[m
+[32m+[m[32m  while(abs(SensorValue[gyro]) < 80);[m
+   blueTeam ? chassisSet(-rotationSpeed, rotationSpeed) : chassisSet(rotationSpeed, -rotationSpeed);[m
+   chassisSet(0, 0);[m
+ [m
+[36m@@ -308,6 +311,13 @@[m [mvoid mobileLiftSet(int val) {[m
+ 	motor[mobileGoalLift] = val;[m
+ }[m
+ [m
+[32m+[m
+[32m+[m[32mvoid encoderReset() {[m
+[32m+[m	[32mSensorValue[leftDriveEncoder] = 0;[m
+[32m+[m	[32mSensorValue[rightDriveEncoder] = 0;[m
+[32m+[m[32m}[m
+[32m+[m
+[32m+[m
+ void autoStack(int cone) {[m
+ 	int startingEncoder = abs(SensorValue[leftLiftEncoder]);[m
+   const int stackHeights[6] = {0, 6, 0, 0, 0, 0};[m
+[36m@@ -370,7 +380,60 @@[m [mvoid encoderLiftMove(int objective) {[m
+   liftSet(0, 0);[m
+ }[m
+ [m
+[31m-void waitForDriveEncoder(int objective) {[m
+[32m+[m[32mvoid waitForEncoders(int objective) {[m
+ 	while( abs(SensorValue[rightDriveEncoder]) <= objective ||[m
+ 				abs(SensorValue[leftDriveEncoder]) <= objective);[m
+ }[m
+[32m+[m[32mvoid waitForEncoders(int objective, bool moveMG) {[m
+[32m+[m	[32mwhile( abs(SensorValue[rightDriveEncoder]) <= objective || abs(SensorValue[leftDriveEncoder]) <= objective) {[m
+[32m+[m
+[32m+[m		[32mif(moveMG && abs(SensorValue[rightDriveEncoder]) >= objective/2) mobileLiftSet(0);[m
+[32m+[m
+[32m+[m	[32m}[m
+[32m+[m[32m}[m
+[32m+[m
+[32m+[m[32mvoid initialConeStack() {[m
+[32m+[m
+[32m+[m[32m  fourBarSet(-127);[m
+[32m+[m[32m  delay(700);[m
+[32m+[m[32m  fourBarSet(127);[m
+[32m+[m[32m  delay(600);[m
+[32m+[m[32m  fourBarSet(0);[m
+[32m+[m
+[32m+[m[32m  liftSet(-100, -100);[m
+[32m+[m[32m  delay(200);[m
+[32m+[m[32m  intakeSet(-50);[m
+[32m+[m[32m  delay(200);[m
+[32m+[m[32m  liftSet(0, 0);[m
+[32m+[m[32m  intakeSet(0);[m
+[32m+[m
+[32m+[m[32m  delay(200);[m
+[32m+[m[32m}[m
+[32m+[m
+[32m+[m[32mvoid dropMobileGoal(bool time) {[m
+[32m+[m[32m  //total time delayed should be 1475[m
+[32m+[m
+[32m+[m[32m  //move forward into 20 pt zone[m
+[32m+[m[32m  //and mobile goal down[m
+[32m+[m[32m  mobileLiftSet(127);[m
+[32m+[m[32m  delay(300);[m
+[32m+[m[32m  mobileLiftSet(0);[m
+[32m+[m
+[32m+[m[32m  chassisSet(127, 127);[m
+[32m+[m
+[32m+[m[32m  delay(500);[m
+[32m+[m[32m  mobileLiftSet(127);[m
+[32m+[m
+[32m+[m[32m  delay(800);[m
+[32m+[m[32m  mobileLiftSet(0);[m
+[32m+[m
+[32m+[m[32m  //back up a bit[m
+[32m+[m[32m  chassisSet(-127, -127);[m
+[32m+[m[32m  delay(300);[m
+[32m+[m[32m  chassisSet(0, 0);[m
+[32m+[m
+[32m+[m[32m  //mobile goal up[m
+[32m+[m[32m  mobileLiftSet(-127);[m
+[32m+[m[32m  delay(600);[m
+[32m+[m[32m  mobileLiftSet(0);[m
+[32m+[m[32m}[m
