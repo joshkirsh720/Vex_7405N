@@ -90,7 +90,22 @@ task autonomous()
   const int imeValue = 1475; //4704
   const bool blueTeam = false;
 
-  intakeSet(50);
+
+  //reset all the stuff
+  SensorValue[gyro] = 0;
+	SensorValue[rightDriveEncoder] = 0;
+	SensorValue[leftDriveEncoder] = 0;
+	SensorValue[rightLiftEncoder] = 0;
+	SensorValue[leftLiftEncoder] = 0;
+	SensorValue[chainbarEncoder] = 0;
+
+	chassisSet(0, 0);
+	liftSet(0, 0);
+	fourBarSet(0);
+	intakeSet(0);
+
+	//start the thing
+  intakeSet(40);
 
   chassisSet(0, 0);
   liftSet(100, 100);
@@ -227,6 +242,8 @@ task autonomous()
 /*  You must modify the code to add your own robot specific commands here.   */
 /*---------------------------------------------------------------------------*/
 
+
+//add Xmtr2 to the end to make it second controller ex Btn5DXmtr2
 task usercontrol() {
   // User control code here, inside the loop
 	int coneCount = 0;
@@ -276,6 +293,17 @@ task usercontrol() {
 	  if(vexRT[Btn8R]) fourBarSet(-127);
 		else if(vexRT[Btn8L]) fourBarSet(127);
 		else fourBarSet(0);
+
+		//four bar auto move
+		if(vexRT[Btn7L] == 1){
+		  fourBarSet(127);
+		  wait1Msec(550);
+		  fourBarSet(0);
+		}else if(vexRT(Btn7R) == 1){
+			fourBarSet(-127);
+		  wait1Msec(550);
+		  fourBarSet(0);
+		}
 	  //END FOUR BAR CODE
 
 
@@ -294,28 +322,22 @@ task usercontrol() {
 
 
 	  //START LIFT CODE
+		int liftEncoderDiff = SensorValue[leftLiftEncoder] - SensorValue[rightLiftEncoder];
+
 	  if(vexRT[Btn8U] == 1) {
-	  	liftSet(90, 90);
+	  	if(liftEncoderDiff > 15) liftSet(75, 90);
+	  	else if(liftEncoderDiff < -15) liftSet(90, 75);
+	  	else liftSet(90, 90);
 		}
 		else if(vexRT[Btn8D] == 1) {
-			liftSet(-90, -90);
+			if(liftEncoderDiff > 15) liftSet(-90, -75);
+	  	else if(liftEncoderDiff < -15) liftSet(-75, -90);
+	  	else liftSet(-90, -90);
 		}
 		else {
 			liftSet(0, 0);
 		}
 	  //END LIFT CODE
-
-		if(vexRT[Btn7L] == 1){
-		  fourBarSet(127);
-		  wait1Msec(550);
-		  fourBarSet(0);
-		}else if(vexRT(Btn7R) == 1){
-			fourBarSet(-127);
-		  wait1Msec(550);
-		  fourBarSet(0);
-	}
-
-
   }
 }
 
