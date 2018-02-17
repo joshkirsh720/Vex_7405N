@@ -327,21 +327,9 @@ task usercontrol() {
 
 
 	  //START LIFT CODE
-		int liftEncoderDiff = SensorValue[leftLiftEncoder] - SensorValue[rightLiftEncoder];
-
-	  if(vexRT[Btn8U] == 1) {
-	  	if(liftEncoderDiff > 15) liftSet(75, 90);
-	  	else if(liftEncoderDiff < -15) liftSet(90, 75);
-	  	else liftSet(90, 90);
-		}
-		else if(vexRT[Btn8D] == 1) {
-			if(liftEncoderDiff > 15) liftSet(-90, -75);
-	  	else if(liftEncoderDiff < -15) liftSet(-75, -90);
-	  	else liftSet(-90, -90);
-		}
-		else {
-			liftSet(0, 0);
-		}
+	  if(vexRT[Btn8U] == 1) liftSet(90, 90);
+	  else if(vexRT[Btn8D] == 1) liftSet(-90, -90);
+	  else liftSet(0, 0);
 	  //END LIFT CODE
   }
 }
