@@ -263,18 +263,19 @@ task usercontrol() {
     // ........................................................................
 
   	//START DRIVE CODE
-  	int forwardMotion = vexRT[Ch3];
-  	int sideMotion = vexRT[Ch1];
 
-		//if the right joystick is being moved horizontally
-		if(abs(sideMotion ) > 20 || abs(forwardMotion ) > 20) {
-			chassisSet(forwardMotion + sideMotion, forwardMotion - sideMotion);
+  	int forwardMotionXmtr2 = vexRT[Ch3Xmtr2];
+  	int sideMotionXmtr2 = vexRT[Ch1Xmtr2];
+
+		if(abs(sideMotionXmtr2) > 20 || abs(forwardMotionXmtr2) > 20) {
+			chassisSet(forwardMotionXmtr2 + sideMotionXmtr2, forwardMotionXmtr2 - sideMotionXmtr2);
 		}
 		//if neither joystick is being moved
 		else {
 			//stop
 			chassisSet(0, 0);
 		}
+
 		//END DRIVE CODE
 
 		//AUTOSTACK
@@ -288,14 +289,18 @@ task usercontrol() {
 
 
 		//START MOBILE GOAL LIFT CODE
-		if(vexRT[Btn6D] == 1) mobileLiftSet(127);
-	  else if(vexRT[Btn6U] == 1) mobileLiftSet(-127);
+
+	  //FOR PARTNER CONTROL TESTING ONLY
+		if(vexRT[Btn6DXmtr2] == 1) mobileLiftSet(127);
+	  else if(vexRT[Btn6UXmtr2] == 1) mobileLiftSet(-127);
 	  else mobileLiftSet(0);
+	  //FOR PARTNER CONTROL TESTING ONLY
+
 		//END MOBILE GOAL LIFT CODE
 
 	  //START FOUR BAR
-	  if(vexRT[Btn8L]) fourBarSet(-127);
-		else if(vexRT[Btn8R]) fourBarSet(127);
+	  if(vexRT[Btn8R]) fourBarSet(-127);
+		else if(vexRT[Btn8L]) fourBarSet(127);
 		else fourBarSet(0);
 
 		//four bar auto move
@@ -312,8 +317,8 @@ task usercontrol() {
 
 
 	  //START INTAKE CODE
-	  if(vexRT[Btn5U])intakeSet(-40);
-		else if(vexRT[Btn5D])intakeSet(40);
+	  if(vexRT[Btn5D])intakeSet(-40);
+		else if(vexRT[Btn5U])intakeSet(40);
 		else {
 		intakeSet(0);
 		}
