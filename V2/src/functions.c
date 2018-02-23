@@ -169,7 +169,7 @@ void intakeSet(int speed) {
   motorSet(INTAKE_MOTOR, -speed);
 }
 
-void dropMobileGoal(bool time) {// your mom is gay
+void dropMobileGoal(bool time) {
   //total time delayed should be 1475
 
   //move forward into 20 pt zone

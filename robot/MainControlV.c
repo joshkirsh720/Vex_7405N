@@ -3,6 +3,7 @@
 #pragma config(Sensor, dgtl3,  leftDriveEncoder, sensorQuadEncoder)
 #pragma config(Sensor, dgtl5,  rightLiftEncoder, sensorQuadEncoder)
 #pragma config(Sensor, dgtl7,  leftLiftEncoder, sensorQuadEncoder)
+#pragma config(Sensor, dgtl9,  ultrasonic,     sensorSONAR_inch)
 #pragma config(Motor,  port1,           mobileGoalLift, tmotorNone, openLoop)
 #pragma config(Motor,  port2,           rightDriveBack, tmotorVex393HighSpeed_MC29, openLoop, reversed)
 #pragma config(Motor,  port3,           leftDriveBack, tmotorVex393HighSpeed_MC29, openLoop)
@@ -48,12 +49,17 @@ void mobileLiftSet(int val);
 
 void encoderReset();
 
-void autoStack(int cone);
+void autoStackLiftUp();
+void autoStackLiftDown(int leftLiftInitialValue, int rightLiftInitialValue);
 void encoderLiftMove(int objective);
 void waitForEncoders(int objective, bool moveMG);
 void initialConeStack();
+void liftEncoderReset();
 void dropMobileGoal(bool time);
 void gyroCorrect();
+
+void regularAuton(bool blueTeam);
+void stationaryAuton(bool left);
 
 void pre_auton()
 {
@@ -86,11 +92,10 @@ void pre_auton()
 
 task autonomous()
 {
-  const int imeValue = 1475; //4704
-  const bool blueTeam = true;
 
+	int auton = 1;
 
-  //reset all the stuff
+	//reset all the stuff
   SensorValue[gyro] = 0;
 	SensorValue[rightDriveEncoder] = 0;
 	SensorValue[leftDriveEncoder] = 0;
@@ -105,136 +110,18 @@ task autonomous()
 	//start the thing
   intakeSet(40);
 
-  chassisSet(0, 0);
-  liftSet(100, 100);
-  fourBarSet(-100);
-  mobileLiftSet(127);
-  delay(100);
-  fourBarSet(0);
-  delay(200); //give time for lift to go up
-  liftSet(0, 0);
+  //0: blue side mobile goal auton
+	if(auton == 0) regularAuton(true);
 
-  delay(300);
+	//1: red side mobile goal auton
+	else if(auton == 1) regularAuton(false);
 
-  //start moving forward
-  chassisSet(127, 127);
-	waitForEncoders(imeValue, true);
-  chassisSet(0, 0);
+	//2: left side stationary auton
+	else if(auton == 2) stationaryAuton(true);
 
-  //pick up mobile goal
-  mobileLiftSet(-127);
-  delay(1400);
-  mobileLiftSet(0);
-
-  initialConeStack();
-
-  encoderReset();
-
-  //move forward for second cone
-  chassisSet(127, 127);
-  waitForEncoders(100, false);
-  chassisSet(0, 0);
-
-  //get the cone
-  fourBarSet(-127);
-  liftSet(-100, -100);
-  delay(400);
-  liftSet(-30, -30);
-  intakeSet(100);
-  delay(400);
-  intakeSet(15);
-
-  //cone is picked up
-  fourBarSet(127);
-  delay(300);
-  liftSet(100, 100);
-  delay(400);
-  liftSet(0, 0);
-  fourBarSet(0);
-
-  liftSet(-100, -100);
-  delay(200);
-  liftSet(0, 0);
-
-  intakeSet(-100);
-  delay(500);
-  intakeSet(0);
-
-  //move backwards
-  encoderReset();
-  chassisSet(-127, -127);
-  waitForEncoders(imeValue + 100, false);
-  chassisSet(0, 0);
-
-  delay(200);
-
-
-  int rotationSpeed = 85;
-
-
-
-/*
-//BEGIN TEMP ADDITION
-  //turn
-  gyroReset(gyro);
-  blueTeam ? chassisSet(rotationSpeed, -rotationSpeed) : chassisSet(-rotationSpeed, rotationSpeed);
-  while(abs(gyroGet(gyro)) < 180);
-  blueTeam ? chassisSet(-rotationSpeed, rotationSpeed) : chassisSet(rotationSpeed, -rotationSpeed);
-  chassisSet(0, 0);
-
-  chassisSet(127, 127);
-  delay(300);
-  chassisSet(0, 0);
-
-  mobileLiftSet(127);
-  delay(1400);
-  mobileLiftSet(0);
-
-  chassisSet(-127, -127);
-  delay(500);
-  chassisSet(0, 0);
-//END TEMP ADDITION
-*/
-
-
-
-
-  //turn
-  blueTeam ? chassisSet(rotationSpeed, -rotationSpeed) : chassisSet(-rotationSpeed, rotationSpeed);
-  while(abs(SensorValue[gyro]) < 1200);
-  blueTeam ? chassisSet(-rotationSpeed, rotationSpeed) : chassisSet(rotationSpeed, -rotationSpeed);
-  chassisSet(0, 0);
-
-  encoderReset();
-  //move forward
-  chassisSet(127, 127);
-  waitForEncoders(275, false);
-  chassisSet(0, 0);
-
-  //turn to face goal
-  SensorValue[gyro] = 0;
-  blueTeam ? chassisSet(rotationSpeed, -rotationSpeed) : chassisSet(-rotationSpeed, rotationSpeed);
-  while(abs(SensorValue[gyro]) < 700);
-  blueTeam ? chassisSet(-rotationSpeed, rotationSpeed) : chassisSet(rotationSpeed, -rotationSpeed);
-  chassisSet(0, 0);
-
-  liftSet(100, 100);
-  delay(150);
-  liftSet(0, 0);
-
-  //drop off mobile goal
-  dropMobileGoal(false);
-
-  //if lift gets stuck
-  mobileLiftSet(-127);
-  delay(600);
-  mobileLiftSet(0);
-
-  chassisSet(-127, -127);
-  delay(500);
-  chassisSet(0, 0);
+	//3: right side stationary auton
+	else if(auton == 3) stationaryAuton(false);
 }
-
 /*---------------------------------------------------------------------------*/
 /*                                                                           */
 /*                              User Control Task                            */
@@ -280,12 +167,42 @@ task usercontrol() {
 
 		//AUTOSTACK
 		if(vexRT[Btn7U] == 1){
-			coneCount++;
-			autoStack(coneCount);
-		}else if(vexRT[Btn7D] == 1) {
-			if(coneCount > 0) coneCount--;
+
+            int leftLiftValue = SensorValue[leftLiftEncoder];
+            int rightLiftValue = SensorValue[rightLiftEncoder];
+
+
+            intakeSet(50);
+
+            autoStackLiftUp();
+            //autostackFunction moves the lift up
+
+            fourBarSet(127);
+            delay(700);
+            //bring 4 bar back
+            fourBarSet(0);
+				delay(50);
+            intakeSet(-120);
+            delay(300);
+            intakeSet(0);
+            //drop the cone
+
+            fourBarSet(-127);
+            delay(800);
+            fourBarSet(0);
+            //fourbar out
+
+            autoStackLiftDown(leftLiftValue,rightLiftValue);
+
+            //TODO: PUT THE ULTRASONIC IN MOTOR AND SENSOR SETUP named "ultrasonic"
+
+
+
+
+
+
 	  }
-		//AUTOSTACK
+		//END OF AUTOSTACK
 
 
 		//START MOBILE GOAL LIFT CODE
@@ -317,21 +234,44 @@ task usercontrol() {
 
 
 	  //START INTAKE CODE
-	  if(vexRT[Btn5D])intakeSet(-40);
-		else if(vexRT[Btn5U])intakeSet(40);
+	  if(vexRT[Btn5D])intakeSet(-127);
+		else if(vexRT[Btn5U])intakeSet(45);
 		else {
 		intakeSet(0);
 		}
 		//END INTAKE CODE
 
 
-
+	//int DesiredValue = 0;
 	  //START LIFT CODE
-	  if(vexRT[Btn8U] == 1) liftSet(90, 90);
-	  else if(vexRT[Btn8D] == 1) liftSet(-90, -90);
-	  else liftSet(0, 0);
-	  //END LIFT CODE
-  }
+	  if(vexRT[Btn8U] == 1) {
+			liftSet(100, 100);
+	 //DesiredValue = SensorValue[leftLiftEncoder];
+		}
+	  else if(vexRT[Btn8D] == 1) {
+		  //DO AUTOCORRECT DOWN
+
+		  /*int leftValue = SensorValue[leftLiftEncoder];
+		  int rightValue = SensorValue[rightLiftEncoder];
+		  if(leftValue-rightValue > 2){
+		  	liftSet(-90, -60);
+		  }else if ( rightValue - leftValue > 2){
+		  	liftSet(-60, -90);
+		  } else {
+		  	liftSet(-90, -90);
+		  }*/
+
+			liftSet(-70, -70);
+
+	   //DesiredValue = SensorValue[leftLiftEncoder];
+		}
+	  else {
+			liftSet(0, 0);
+	}
+	//END LIFT CODE
+
+
+	}
 }
 
 //begin function definitions
@@ -360,42 +300,55 @@ void encoderReset() {
 	SensorValue[leftDriveEncoder] = 0;
 	SensorValue[rightDriveEncoder] = 0;
 }
+void liftEncoderReset(){
+    SensorValue[rightLiftEncoder] = 0;
+    SensorValue[leftLiftEncoder] = 0;
+
+}
 
 
-void autoStack(int cone) {
-	int startingEncoder = abs(SensorValue[leftLiftEncoder]);
-  const int stackHeights[6] = {0, 6, 0, 0, 0, 0};
 
-  int objectiveHeight = stackHeights[cone];
+void autoStackLiftUp() {
+    while(SensorValue[ultrasonic] < 7 && SensorValue[ultrasonic] > -1){
+        //this means that there is a cone
+        //becuase the next object is closer than 9 inches
+        liftSet(127, 127);
+        delay(79)
+    }
+
+        //there is no cone
+        liftSet(0,0);
+        return;
 
 
-  //move chainbar down and grab cone
-  fourBarSet(-127);
-  intakeSet(50);
-  delay(300);
-  intakeSet(15);
-  fourBarSet(0);
 
-  //move to position to stack cone
-  encoderLiftMove(objectiveHeight);
+}
 
-  //move chainbar into stacking position
-  fourBarSet(127);
-  delay(900);
-  fourBarSet(0);
+void autoStackLiftDown(int leftLiftInitialValue, int rightLiftInitialValue){
+    while(SensorValue[leftLiftEncoder] > leftLiftInitialValue + 20 ){
+        if(SensorValue[rightLiftEncoder] > rightLiftInitialValue + 20){
+        //the lift is higher than the initial value which it was triggered at
+            liftSet(-60,-60);
 
-  //drop cone
-  intakeSet(-100);
-  delay(500);
-  intakeSet(0);
 
-  //move chainbar back
-  fourBarSet(-127);
-  delay(700);
-  fourBarSet(0);
 
-  //lift back to starting position
-  encoderLiftMove(startingEncoder);
+
+        }
+        liftSet(-60,-60);
+
+
+        if(vexRT[Btn7R] == 1){
+        	return;
+
+        }
+    }
+
+    liftSet(0,0);
+//lol stop
+    return;
+
+
+
 }
 
 void encoderLiftMove(int objective) {
@@ -436,9 +389,17 @@ void waitForEncoders(int objective, bool moveMG) {
 
 void initialConeStack() {
 
+	liftSet(-100, -100);
+	delay(150);
+	liftSet(0, 0);
+
   intakeSet(-50);
   delay(300);
   intakeSet(0);
+
+  liftSet(100, 100);
+  delay(100);
+  liftSet(0, 0);
 }
 
 void dropMobileGoal(bool time) {
@@ -452,10 +413,10 @@ void dropMobileGoal(bool time) {
 
   chassisSet(127, 127);
 
-  delay(500);
+  delay(300);
   mobileLiftSet(127);
 
-  delay(800);
+  delay(1000);
   mobileLiftSet(0);
 
   //back up a bit
@@ -475,4 +436,149 @@ void gyroCorrect() {
 	if(SensorValue[gyro] > 10) chassisSet(127, 80);
 	else if(SensorValue[gyro] < -10) chassisSet(80, 127);
 	else chassisSet(127, 127);
+}
+
+void regularAuton(bool blueTeam) {
+	const int imeValue = 1475; //4704
+
+  chassisSet(0, 0);
+  liftSet(100, 100);
+  mobileLiftSet(127);
+  delay(100);
+  fourBarSet(50);
+  delay(200); //give time for lift to go up
+  liftSet(0, 0);
+
+  delay(300);
+
+  //start moving forward
+  chassisSet(127, 127);
+	waitForEncoders(imeValue, true);
+  chassisSet(0, 0);
+
+  //pick up mobile goal
+  mobileLiftSet(-127);
+  delay(1400);
+  mobileLiftSet(0);
+
+  initialConeStack();
+
+  encoderReset();
+
+  //move forward for second cone
+  chassisSet(127, 127);
+  waitForEncoders(100, false);
+  chassisSet(0, 0);
+
+  //get the cone
+  fourBarSet(-127);
+  liftSet(-100, -100);
+  delay(400);
+  liftSet(-30, -30);
+  intakeSet(100);
+  delay(400);
+  intakeSet(15);
+
+  //cone is picked up
+  fourBarSet(127);
+  delay(300);
+  liftSet(100, 100);
+  delay(400);
+  liftSet(0, 0);
+  fourBarSet(0);
+
+  liftSet(-100, -100);
+  delay(300);
+  liftSet(0, 0);
+
+  intakeSet(-100);
+  delay(500);
+  intakeSet(0);
+
+  //move backwards
+  encoderReset();
+  chassisSet(-127, -127);
+  waitForEncoders(imeValue + 100, false);
+  chassisSet(0, 0);
+
+  delay(200);
+
+
+  int rotationSpeed = 85;
+
+
+
+/*
+//BEGIN TEMP ADDITION
+  //turn
+  gyroReset(gyro);
+  blueTeam ? chassisSet(rotationSpeed, -rotationSpeed) : chassisSet(-rotationSpeed, rotationSpeed);
+  while(abs(gyroGet(gyro)) < 180);
+  blueTeam ? chassisSet(-rotationSpeed, rotationSpeed) : chassisSet(rotationSpeed, -rotationSpeed);
+  chassisSet(0, 0);
+
+  chassisSet(127, 127);
+  delay(300);
+  chassisSet(0, 0);
+
+  mobileLiftSet(127);
+  delay(1400);
+  mobileLiftSet(0);
+
+  chassisSet(-127, -127);
+  delay(500);
+  chassisSet(0, 0);
+//END TEMP ADDITION
+*/
+
+
+  //turn
+	if(blueTeam) chassisSet(rotationSpeed, -rotationSpeed);
+	else chassisSet(-rotationSpeed, rotationSpeed);
+
+  while(abs(SensorValue[gyro]) < 1200){}
+
+  if(blueTeam) chassisSet(-rotationSpeed, rotationSpeed);
+	else chassisSet(rotationSpeed, -rotationSpeed);
+
+  chassisSet(0, 0);
+
+  encoderReset();
+  //move forward
+  chassisSet(127, 127);
+  waitForEncoders(325, false);
+  chassisSet(0, 0);
+
+  //turn to face goal
+  SensorValue[gyro] = 0;
+
+  if(blueTeam) chassisSet(rotationSpeed, -rotationSpeed);
+	else chassisSet(-rotationSpeed, rotationSpeed);
+
+  while(abs(SensorValue[gyro]) < 675){}
+
+  if(blueTeam) chassisSet(-rotationSpeed, rotationSpeed);
+	else chassisSet(rotationSpeed, -rotationSpeed);
+
+  chassisSet(0, 0);
+
+  liftSet(100, 100);
+  delay(150);
+  liftSet(0, 0);
+
+  //drop off mobile goal
+  dropMobileGoal(false);
+
+  //if lift gets stuck
+  mobileLiftSet(-127);
+  delay(600);
+  mobileLiftSet(0);
+
+  chassisSet(-127, -127);
+  delay(500);
+  chassisSet(0, 0);
+}
+
+void stationaryAuton(bool left) {
+
 }
