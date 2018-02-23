@@ -93,7 +93,7 @@ void pre_auton()
 task autonomous()
 {
 
-	int auton = 1;
+	int auton = 2;
 
 	//reset all the stuff
   SensorValue[gyro] = 0;
@@ -245,7 +245,7 @@ task usercontrol() {
 	//int DesiredValue = 0;
 	  //START LIFT CODE
 	  if(vexRT[Btn8U] == 1) {
-			liftSet(100, 100);
+			liftSet(90, 90);
 	 //DesiredValue = SensorValue[leftLiftEncoder];
 		}
 	  else if(vexRT[Btn8D] == 1) {
@@ -261,7 +261,7 @@ task usercontrol() {
 		  	liftSet(-90, -90);
 		  }*/
 
-			liftSet(-70, -70);
+			liftSet(-65, -65);
 
 	   //DesiredValue = SensorValue[leftLiftEncoder];
 		}
@@ -483,8 +483,9 @@ void regularAuton(bool blueTeam) {
   fourBarSet(127);
   delay(300);
   liftSet(100, 100);
-  delay(400);
+  delay(300);
   liftSet(0, 0);
+  delay(200);
   fourBarSet(0);
 
   liftSet(-100, -100);
@@ -555,7 +556,7 @@ void regularAuton(bool blueTeam) {
   if(blueTeam) chassisSet(rotationSpeed, -rotationSpeed);
 	else chassisSet(-rotationSpeed, rotationSpeed);
 
-  while(abs(SensorValue[gyro]) < 675){}
+  while(abs(SensorValue[gyro]) < 695){}
 
   if(blueTeam) chassisSet(-rotationSpeed, rotationSpeed);
 	else chassisSet(rotationSpeed, -rotationSpeed);
@@ -581,4 +582,67 @@ void regularAuton(bool blueTeam) {
 
 void stationaryAuton(bool left) {
 
+	chassisSet(60, 60);
+	waitForEncoders(90, false);
+
+	int turnSpeed = 75;
+	//turn to face stationary goal
+	if(left) chassisSet(turnSpeed, -turnSpeed);
+	else chassisSet(-turnSpeed, turnSpeed);
+
+
+	if(left) while( abs(SensorValue[gyro]) < 685);
+	else while( abs(SensorValue[gyro]) < 670);
+
+
+	if(left) chassisSet(-turnSpeed, turnSpeed);
+	else chassisSet(turnSpeed, -turnSpeed);
+	chassisSet(0, 0);
+
+	encoderReset();
+
+	//move forward to stationary goal
+	chassisSet(60, 60);
+	if(left) waitForEncoders(340, false);
+	else waitForEncoders(390, false);
+	chassisSet(0, 0);
+
+	//lift up
+	liftSet(100, 100);
+	delay(500);
+	liftSet(0, 0);
+
+	delay(300);
+
+	//four bar out
+	fourBarSet(-127);
+	delay(300);
+	fourBarSet(0);
+
+	//lift down a bit to get cone on goal
+	liftSet(-70, -70);
+	delay(250);
+	liftSet(0, 0);
+
+	//cone drop, lift up
+	intakeSet(-127);
+	liftSet(100, 100);
+	delay(300);
+	intakeSet(0);
+	liftSet(0, 0);
+
+	//four bar back
+	fourBarSet(127);
+	delay(300);
+	fourBarSet(0);
+
+	//lift down
+	liftSet(-70, -70);
+	delay(400);
+	liftSet(0, 0);
+
+	//back up a bit
+	chassisSet(-60, -60);
+	delay(300);
+	chassisSet(0, 0);
 }
