@@ -176,7 +176,7 @@ task autonomous()
 	gyroMove(3000, -1, 1,);
 	moveToMotorEncoderValue(665, -1);
 
-	gyroMove(310, 1, -1 );
+	gyroMove(320, 1, -1 );
 	//ROTATE TO PICK UP THE MG
 
 	motor[mobileGoalLift] = 127;
