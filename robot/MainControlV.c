@@ -93,7 +93,7 @@ void pre_auton()
 task autonomous()
 {
 
-	int auton = 2;
+	int auton = 3;
 
 	//reset all the stuff
   SensorValue[gyro] = 0;
@@ -109,6 +109,12 @@ task autonomous()
 
 	//start the thing
   intakeSet(40);
+  fourbarSet(-127);
+  delay(500);
+  fourBarSet(127);
+  delay(650);
+  liftSet(0, 0);
+
 
   //0: blue side mobile goal auton
 	if(auton == 0) regularAuton(true);
@@ -261,7 +267,7 @@ task usercontrol() {
 		  	liftSet(-90, -90);
 		  }*/
 
-			liftSet(-65, -65);
+			liftSet(-70, -70);
 
 	   //DesiredValue = SensorValue[leftLiftEncoder];
 		}
@@ -416,7 +422,7 @@ void dropMobileGoal(bool time) {
   delay(300);
   mobileLiftSet(127);
 
-  delay(1000);
+  delay(800);
   mobileLiftSet(0);
 
   //back up a bit
@@ -476,7 +482,7 @@ void regularAuton(bool blueTeam) {
   delay(400);
   liftSet(-30, -30);
   intakeSet(100);
-  delay(400);
+  delay(600);
   intakeSet(15);
 
   //cone is picked up
@@ -547,7 +553,7 @@ void regularAuton(bool blueTeam) {
   encoderReset();
   //move forward
   chassisSet(127, 127);
-  waitForEncoders(325, false);
+  waitForEncoders(300, false);
   chassisSet(0, 0);
 
   //turn to face goal
@@ -556,7 +562,8 @@ void regularAuton(bool blueTeam) {
   if(blueTeam) chassisSet(rotationSpeed, -rotationSpeed);
 	else chassisSet(-rotationSpeed, rotationSpeed);
 
-  while(abs(SensorValue[gyro]) < 695){}
+  if(blueTeam) while(abs(SensorValue[gyro]) < 695){}
+  else while(abs(SensorValue[gyro]) < 650){}
 
   if(blueTeam) chassisSet(-rotationSpeed, rotationSpeed);
 	else chassisSet(rotationSpeed, -rotationSpeed);
@@ -583,7 +590,8 @@ void regularAuton(bool blueTeam) {
 void stationaryAuton(bool left) {
 
 	chassisSet(60, 60);
-	waitForEncoders(90, false);
+	if(left)waitForEncoders(90, false);
+	else waitForEncoders(75, false);
 
 	int turnSpeed = 75;
 	//turn to face stationary goal

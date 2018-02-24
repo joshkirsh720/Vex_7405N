@@ -176,7 +176,7 @@ task autonomous()
 	gyroMove(3000, -1, 1,);
 	moveToMotorEncoderValue(665, -1);
 
-	gyroMove(320, 1, -1 );
+	gyroMove(330, 1, -1 );
 	//ROTATE TO PICK UP THE MG
 
 	motor[mobileGoalLift] = 127;
@@ -645,7 +645,7 @@ void gyroMove(int desiredGyro, int directionLeft,int directionRight){
 	int currentGyro = SensorValue[gyro];
 	while(currentGyro  < desiredGyro - 30 || currentGyro  > desiredGyro + 30 ){
 		currentGyro = SensorValue[gyro];
-		int h = (desiredGyro - currentGyro) * 0.15;
+		int h = (desiredGyro - currentGyro) * 0.125;
 		chassisSet( -h, h);
 		delay(50);
 
